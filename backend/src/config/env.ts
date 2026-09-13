@@ -14,7 +14,7 @@ dotenv.config({ path: path.resolve(process.cwd(), ".env") });
 const envSchema = z.object({
   PORT: z.string().default("5000"),
   NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
-  MONGO_URI: z.string().default("mongodb://localhost:27017/honeychain"),
+  MONGO_URI: z.string().default(process.env.MONGODB_URI || "mongodb://localhost:27017/honeychain"),
   MONGO_DB_NAME: z.string().default("honeychain"),
   JWT_SECRET: z.string().default("honeychain_dev_jwt_secret_change_in_production"),
   JWT_EXPIRES_IN: z.string().default("7d"),
@@ -93,6 +93,7 @@ if (!parsed.success) {
 
 export const env = {
   ...parsed.data,
+  MONGO_URI: process.env.MONGO_URI || process.env.MONGODB_URI || parsed.data.MONGO_URI,
   ADMIN_PRIVATE_KEY: parsed.data.ADMIN_PRIVATE_KEY || parsed.data.DEPLOYER_PRIVATE_KEY,
   LABORATORY_PRIVATE_KEY: parsed.data.LABORATORY_PRIVATE_KEY || parsed.data.LAB_PRIVATE_KEY,
   TRANSPORTER_PRIVATE_KEY: parsed.data.TRANSPORTER_PRIVATE_KEY || parsed.data.DISTRIBUTOR_PRIVATE_KEY,
