@@ -44,21 +44,46 @@ export class AlertService {
       cooldownMinutes = 60,
     } = data;
 
-    const cooldownThreshold = new Date(Date.now() - cooldownMinutes * 60 * 1000);
-
-    // Check for an existing unresolved alert of the same type for this hive created within the cooldown
-    const existing = await Alert.findOne({
+    // 1. If an unresolved alert of the same type already exists for this hive,
+    // do NOT create a duplicate alert card. Instead, update the existing alert in-place.
+    const existingUnresolved = await Alert.findOne({
       hiveId,
       alertType,
       isResolved: false,
-      createdAt: { $gte: cooldownThreshold },
     }).sort({ createdAt: -1 });
 
-    if (existing) {
+    if (existingUnresolved) {
+      existingUnresolved.message = message;
+      existingUnresolved.severity = severity;
+      existingUnresolved.metadata = {
+        ...(existingUnresolved.metadata || {}),
+        ...metadata,
+        lastObservedAt: new Date(),
+        occurrences: Number((existingUnresolved.metadata as any)?.occurrences || 1) + 1,
+      };
+      await existingUnresolved.save().catch(() => {});
+
       return {
         created: false,
-        alert: existing,
-        reason: `Alert of type '${alertType}' is already active for hive '${hiveId}' within the ${cooldownMinutes}-minute cooldown`,
+        alert: existingUnresolved,
+        reason: `Alert of type '${alertType}' is already open and active for hive '${hiveId}'`,
+      };
+    }
+
+    // 2. If the alert was recently resolved within the cooldown window, suppress re-creation
+    const cooldownThreshold = new Date(Date.now() - cooldownMinutes * 60 * 1000);
+    const recentlyResolved = await Alert.findOne({
+      hiveId,
+      alertType,
+      isResolved: true,
+      resolvedAt: { $gte: cooldownThreshold },
+    }).sort({ resolvedAt: -1 });
+
+    if (recentlyResolved) {
+      return {
+        created: false,
+        alert: recentlyResolved,
+        reason: `Alert of type '${alertType}' was resolved recently within the ${cooldownMinutes}-minute cooldown`,
       };
     }
 
@@ -69,7 +94,11 @@ export class AlertService {
       severity,
       alertType,
       message,
-      metadata,
+      metadata: {
+        ...metadata,
+        occurrences: 1,
+        firstObservedAt: new Date(),
+      },
       isResolved: false,
     });
 
@@ -79,6 +108,26 @@ export class AlertService {
       created: true,
       alert: newAlert,
     };
+  }
+
+  /**
+   * Auto-resolves active alerts of specified types for a hive (e.g. when sensor readings return to normal).
+   */
+  public async resolveActiveAlerts(hiveId: string, alertTypes: string[]): Promise<number> {
+    const result = await Alert.updateMany(
+      {
+        hiveId,
+        alertType: { $in: alertTypes },
+        isResolved: false,
+      },
+      {
+        $set: {
+          isResolved: true,
+          resolvedAt: new Date(),
+        },
+      }
+    );
+    return result.modifiedCount;
   }
 
   /**

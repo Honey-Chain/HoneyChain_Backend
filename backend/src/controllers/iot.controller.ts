@@ -381,7 +381,7 @@ export class IoTController {
             alertType: "temperature_hypothermia",
             message: `Hive ${cleanHiveId} temperature dropped to ${temperature}°C, below optimal brood nest range (34°C - 36°C).`,
             metadata: { temperature, humidity },
-            cooldownMinutes: 60,
+            cooldownMinutes: 360,
           })
           .catch((e) => console.warn(`[IoTController] Could not record hypothermia alert: ${e.message}`));
       } else if (temperature > 37.5) {
@@ -394,9 +394,14 @@ export class IoTController {
             alertType: "temperature_hyperthermia",
             message: `Hive ${cleanHiveId} temperature rose to ${temperature}°C, risking wax comb meltdown.`,
             metadata: { temperature, humidity },
-            cooldownMinutes: 60,
+            cooldownMinutes: 360,
           })
           .catch((e) => console.warn(`[IoTController] Could not record hyperthermia alert: ${e.message}`));
+      } else {
+        // Temperature within optimal healthy range (32.0°C - 37.5°C) -> auto-resolve hypothermia/hyperthermia
+        await alertService
+          .resolveActiveAlerts(cleanHiveId, ["temperature_hypothermia", "temperature_hyperthermia"])
+          .catch(() => {});
       }
 
       if (batteryLevelPct < 15) {
@@ -409,18 +414,24 @@ export class IoTController {
             alertType: "low_battery",
             message: `Edge gateway battery on hive ${cleanHiveId} is critically low (${batteryLevelPct}%).`,
             metadata: { batteryLevelPct, deviceId: cleanDeviceId },
-            cooldownMinutes: 360,
+            cooldownMinutes: 720,
           })
           .catch((e) => console.warn(`[IoTController] Could not record low battery alert: ${e.message}`));
+      } else if (batteryLevelPct >= 20) {
+        // Battery recharged above warning threshold -> auto-resolve low battery alert
+        await alertService
+          .resolveActiveAlerts(cleanHiveId, ["low_battery"])
+          .catch(() => {});
       }
 
-      // Check sudden weight drop compared to last preceding recorded reading
+      // Check sudden weight drop compared to recent readings within a 2-hour window (prevents comparing against older seeded data)
+      const twoHoursAgo = new Date(parsedTimestamp.getTime() - 2 * 60 * 60 * 1000);
       const previousReading = await SensorReading.findOne({
         hiveId: cleanHiveId,
-        timestamp: { $lt: parsedTimestamp },
+        timestamp: { $lt: parsedTimestamp, $gte: twoHoursAgo },
       }).sort({ timestamp: -1 });
 
-      if (previousReading && (previousReading.weightKg - weightKg) > 1.5) {
+      if (previousReading && (previousReading.weightKg - weightKg) > 2.5) {
         const weightLoss = Number((previousReading.weightKg - weightKg).toFixed(2));
         await alertService
           .createAlertWithCooldown({
@@ -431,7 +442,7 @@ export class IoTController {
             alertType: "rapid_weight_loss",
             message: `Hive ${cleanHiveId} recorded a sudden weight drop of ${weightLoss} kg. Possible swarming or colony robbing event.`,
             metadata: { previousWeightKg: previousReading.weightKg, currentWeightKg: weightKg, weightLoss },
-            cooldownMinutes: 120,
+            cooldownMinutes: 720,
           })
           .catch((e) => console.warn(`[IoTController] Could not record weight loss alert: ${e.message}`));
       }

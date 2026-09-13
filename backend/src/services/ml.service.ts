@@ -643,7 +643,7 @@ export class MLService {
               tier: modelOutput.tier,
               drivers: modelOutput.drivers,
             },
-            cooldownMinutes: 120,
+            cooldownMinutes: 720,
           })
           .catch((e) => console.warn(`[MLService] Could not record stress alert: ${e.message}`));
       }
