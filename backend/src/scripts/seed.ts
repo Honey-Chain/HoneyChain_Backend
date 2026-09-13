@@ -31,6 +31,7 @@ async function seed() {
     "HIVE-KV-202",
     "HIVE-WG-301",
     "HIVE-WG-302",
+    "HIVE-HW-401",
   ];
   const seedBatchIds = ["HC-SEED-BATCH-001", "HC-SEED-BATCH-002"];
   const seedPredictionIds = [
@@ -339,6 +340,45 @@ async function seed() {
         latestReadingAt: new Date(),
         activeAlerts: [],
       },
+      deviceMetadata: {
+        deviceId: "ESP32-WG-GW-02",
+        hardwareModel: "ESP32-WROOM-32U",
+        firmwareVersion: "v2.2.0",
+        communicationProtocol: "HTTP" as const,
+        batteryLevelPct: 100,
+      },
+    },
+    {
+      hiveId: "HIVE-HW-401",
+      apiary: apiaryMap["APIARY-WG-03"]._id,
+      apiaryId: "APIARY-WG-03",
+      beekeeper: BEEKEEPER_SUNDARBANS,
+      hiveType: "Smart-IoT-Box" as const,
+      beeSpecies: "Apis cerana indica",
+      installationDate: new Date(),
+      status: "active" as const,
+      location: {
+        latitude: 14.167,
+        longitude: 74.833,
+        address: "Sirsi Evergreen Forest Buffer Zone, KA 581401",
+        isApproximate: false,
+      },
+      deviceMetadata: {
+        deviceId: "ESP32-HW-01",
+        hardwareModel: "ESP32 Physical Edge Node",
+        firmwareVersion: "v1.0.0-hw",
+        communicationProtocol: "HTTP" as const,
+        batteryLevelPct: 100,
+      },
+      currentHealthSummary: {
+        healthScore: 95,
+        status: "healthy" as const,
+        stressIndex: 0.05,
+        latestInspectionDate: new Date(),
+        latestReadingAt: new Date(),
+        activeAlerts: [],
+      },
+      notes: "Dedicated physical hardware edge node (ESP32/Arduino) transmitting live telemetry.",
     },
   ];
 
