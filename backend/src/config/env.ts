@@ -51,10 +51,11 @@ const envSchema = z.object({
   // Public Base URL for Consumer QR Verification (e.g. https://honeychain-frontend.onrender.com or http://localhost:3000)
   PUBLIC_BASE_URL: z.string().optional(),
 
-  // Independent Python ML Inference Microservice (HTTPS in production, localhost in development)
+  // Independent Python ML Inference Microservices
   ML_SERVICE_URL: z.string().default("http://localhost:5001"),
   ML_API_KEY: z.string().optional(),
   ML_TIMEOUT_MS: z.string().default("10000"),
+  YIELD_ML_SERVICE_URL: z.string().default("https://honeychain-yield-ml.onrender.com"),
 
   // Cloudinary Document Storage
   CLOUDINARY_CLOUD_NAME: z.string().optional(),

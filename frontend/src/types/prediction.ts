@@ -120,3 +120,49 @@ export interface LatestPredictionResponse {
     createdAt: string;
   };
 }
+
+export interface HarvestYieldData {
+  predictionId?: string;
+  hiveId: string;
+  flowState?: "active_flow" | "plateauing" | "post_flow" | "pre_flow" | string;
+  daysIntoFlow: number;
+  expectedHarvestWindowDays: number;
+  harvestWindowRange: string;
+  minDays: number;
+  maxDays: number;
+  confidence: "LOW" | "MEDIUM" | "HIGH" | string;
+  estimatedYieldKg: number;
+  gainRate7d: number;
+  totalWeightGain14d: number;
+  currentWeight: number;
+  modelNote?: string;
+  geminiAnalysis?: {
+    triggered: boolean;
+    summary?: string;
+    estimatedYieldKg?: number;
+    harvestReadiness?: string;
+    cappingProgressEstimate?: string;
+    supersRecommendation?: string;
+    weatherImpact?: string;
+    recommendedAction?: string;
+    actionableSteps?: string[];
+    urgency?: string;
+    generatedAt?: string;
+    modelUsed?: string;
+  };
+  metricsSnapshot?: {
+    telemetryDaysCount: number;
+    firstDay: string;
+    latestDay: string;
+    avgTemp: number;
+    avgHumidity: number;
+    avgDailyFlow: number;
+  };
+}
+
+export interface HarvestYieldResponse {
+  success: boolean;
+  status?: string;
+  data: HarvestYieldData | null;
+  message?: string;
+}

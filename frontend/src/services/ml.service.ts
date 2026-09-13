@@ -3,6 +3,7 @@ import type {
   HistoricalPredictionsResponse,
   LatestPredictionResponse,
   MLPredictionResponse,
+  HarvestYieldResponse,
 } from "@/types/prediction";
 
 export const mlService = {
@@ -48,5 +49,37 @@ export const mlService = {
 
   async health() {
     return api.get("/api/ml/health");
+  },
+
+  /* ==========================================================
+     Yield & Harvest Window ML Microservice + Gemini Insights
+     ========================================================== */
+  async predictYield(
+    hiveId: string,
+    options: { forceAi?: boolean } = { forceAi: true }
+  ): Promise<HarvestYieldResponse> {
+    const response = await api.post<HarvestYieldResponse>(
+      `/api/ml/yield/predict/${encodeURIComponent(hiveId)}`,
+      {},
+      {
+        params: {
+          forceAi: options.forceAi ?? true,
+        },
+      }
+    );
+
+    return response.data;
+  },
+
+  async getLatestYield(hiveId: string): Promise<HarvestYieldResponse> {
+    const response = await api.get<HarvestYieldResponse>(
+      `/api/ml/yield/latest/${encodeURIComponent(hiveId)}`
+    );
+
+    return response.data;
+  },
+
+  async yieldHealth() {
+    return api.get("/api/ml/yield/health");
   },
 };

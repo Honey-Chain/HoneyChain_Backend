@@ -44,13 +44,14 @@ import { socketService } from "@/services/socket.service";
 import { mlService } from "@/services/ml.service";
 import type { Hive, HiveStatus } from "@/types/hive";
 import type { TelemetryHistoryPoint } from "@/types/telemetry";
-import type { Prediction } from "@/types/prediction";
+import type { Prediction, HarvestYieldData } from "@/types/prediction";
 
 import TelemetrySimulator from "@/components/telemetry/TelemetrySimulator";
 import TelemetryForm from "@/components/telemetry/TelemetryForm";
 import PredictionHistory from "@/components/telemetry/PredictionHistory";
 import MLHealthIndicator from "@/components/telemetry/MLHealthIndicator";
 import RecentTelemetryTable from "@/components/telemetry/RecentTelemetryTable";
+import HarvestYieldCard from "@/components/telemetry/HarvestYieldCard";
 
 export default function HiveDetailsPage() {
   const params = useParams<{ hiveId: string }>();
@@ -76,6 +77,12 @@ export default function HiveDetailsPage() {
   const [predictionHistory, setPredictionHistory] = useState<any[]>([]);
   const [predictionLoading, setPredictionLoading] = useState(true);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+
+  // AI Yield & Harvest Window Prediction
+  const [yieldData, setYieldData] = useState<HarvestYieldData | null>(null);
+  const [yieldLoading, setYieldLoading] = useState(true);
+  const [isAnalyzingYield, setIsAnalyzingYield] = useState(false);
+  const [yieldError, setYieldError] = useState<string | null>(null);
 
   // Edit status modal
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -158,11 +165,28 @@ export default function HiveDetailsPage() {
     }
   }, [hiveId]);
 
+  const loadYield = useCallback(async () => {
+    try {
+      setYieldLoading(true);
+      const res = await mlService.getLatestYield(hiveId);
+      if (res?.data) {
+        setYieldData(res.data);
+      } else {
+        setYieldData(null);
+      }
+    } catch {
+      setYieldData(null);
+    } finally {
+      setYieldLoading(false);
+    }
+  }, [hiveId]);
+
   useEffect(() => {
     loadHive();
     loadTelemetry();
     loadPrediction();
-  }, [loadHive, loadTelemetry, loadPrediction]);
+    loadYield();
+  }, [loadHive, loadTelemetry, loadPrediction, loadYield]);
 
   // Periodic heartbeat timer to keep Live / Stale status fresh
   useEffect(() => {
@@ -265,6 +289,27 @@ export default function HiveDetailsPage() {
       setActionError(msg);
     } finally {
       setIsAnalyzing(false);
+    }
+  }
+
+  // Run Yield & Harvest Window analysis
+  async function runYieldPrediction() {
+    try {
+      setIsAnalyzingYield(true);
+      setYieldError(null);
+      const res = await mlService.predictYield(hiveId, { forceAi: true });
+      if (res?.data) {
+        setYieldData(res.data);
+      }
+      await loadYield();
+    } catch (err: any) {
+      const msg =
+        err?.response?.data?.message ||
+        err?.message ||
+        "Yield prediction failed. Ensure sufficient IoT readings are ingested.";
+      setYieldError(msg);
+    } finally {
+      setIsAnalyzingYield(false);
     }
   }
 
@@ -1135,6 +1180,16 @@ export default function HiveDetailsPage() {
         )}
       </section>
 
+      {/* AI Harvest Window & Yield Forecast (LightGBM + Gemini) */}
+      <HarvestYieldCard
+        hiveId={hiveId}
+        yieldData={yieldData}
+        loading={yieldLoading}
+        isAnalyzing={isAnalyzingYield}
+        onRunPrediction={runYieldPrediction}
+        errorMessage={yieldError}
+      />
+
       {/* Historical Predictions */}
       <PredictionHistory hiveId={hiveId} />
 
@@ -1145,6 +1200,7 @@ export default function HiveDetailsPage() {
           onSubmitted={async () => {
             await loadTelemetry();
             await loadPrediction();
+            await loadYield();
             await loadHive();
           }}
         />

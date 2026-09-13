@@ -3,6 +3,7 @@ import app from "./app.js";
 import { env } from "./config/env.js";
 import { connectDB, setupGracefulShutdown } from "./config/db.js";
 import { mlService } from "./services/ml.service.js";
+import { yieldMLService } from "./services/yieldML.service.js";
 import { socketService } from "./services/socket.service.js";
 import { redisService } from "./services/redis.service.js";
 import { populateHiveLocations } from "./scripts/populateHiveLocations.js";
@@ -36,12 +37,20 @@ async function startServer() {
       console.log(`[HoneyChain] API server running on http://localhost:${PORT}`);
       console.log(`[HoneyChain] Connected to Ethereum Sepolia contract: ${env.CONTRACT_ADDRESS}`);
 
-      // Asynchronously probe external ML microservice availability
+      // Asynchronously probe external ML microservices availability
       mlService.checkHealth().then((health) => {
         if (health.healthy) {
-          console.log(`[HoneyChain] Connected to ML microservice at ${health.serviceUrl} (Tiers: ${health.tiers.join(", ")})`);
+          console.log(`[HoneyChain] Connected to Hive Health ML at ${health.serviceUrl} (Tiers: ${health.tiers.join(", ")})`);
         } else {
-          console.log(`[HoneyChain] ML microservice at ${health.serviceUrl} is not reachable yet (${health.error || "offline"})`);
+          console.log(`[HoneyChain] Hive Health ML at ${health.serviceUrl} is not reachable yet (${health.error || "offline"})`);
+        }
+      });
+
+      yieldMLService.checkHealth().then((health) => {
+        if (health.healthy) {
+          console.log(`[HoneyChain] Connected to Yield & Harvest ML at ${health.serviceUrl} (Model: ${health.modelVersion})`);
+        } else {
+          console.log(`[HoneyChain] Yield & Harvest ML at ${health.serviceUrl} is not reachable yet (${health.error || "offline"})`);
         }
       });
     });

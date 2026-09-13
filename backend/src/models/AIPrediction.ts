@@ -36,6 +36,17 @@ export interface IAIPredictionResult {
   };
   recommendation?: string;
   caveat?: string;
+
+  // Model 2: Yield & Harvest Window Inference fields
+  expectedHarvestWindowDays?: number;
+  harvestWindowRange?: string;
+  minDays?: number;
+  maxDays?: number;
+  daysIntoFlow?: number;
+  gainRate7d?: number;
+  flowState?: string;
+  confidenceTier?: string;
+  modelNote?: string;
 }
 
 export interface IGeminiAnalysis {
@@ -134,6 +145,17 @@ const AIPredictionResultSchema = new Schema<IAIPredictionResult>(
     drivers: { type: Schema.Types.Mixed, default: {} },
     recommendation: { type: String },
     caveat: { type: String },
+
+    // Model 2: Yield & Harvest Window Inference fields
+    expectedHarvestWindowDays: { type: Number },
+    harvestWindowRange: { type: String },
+    minDays: { type: Number },
+    maxDays: { type: Number },
+    daysIntoFlow: { type: Number },
+    gainRate7d: { type: Number },
+    flowState: { type: String },
+    confidenceTier: { type: String },
+    modelNote: { type: String },
   },
   { _id: false }
 );
