@@ -88,17 +88,14 @@ export class IoTController {
       const cleanHiveId = hiveId.trim();
       const cleanDeviceId = deviceId.trim();
 
-      // 3. Verify hive exists and check status
+      // 3. Verify hive exists in registry
       const hive = await Hive.findOne({ hiveId: cleanHiveId });
       if (!hive) {
         return next(new AppError(`Hive '${cleanHiveId}' not found in registry`, 404));
       }
 
-      // Check if hive is currently inactive due to an active alert state vs permanently collapsed/inactive
-      const hasActiveAlertCondition = await ActiveAlertState.exists({ hiveId: cleanHiveId, isActive: true });
-      const isAlertInactive = Boolean(hasActiveAlertCondition || hive.currentHealthSummary?.status === "critical");
-
-      if (hive.status === "collapsed" || (hive.status === "inactive" && !isAlertInactive)) {
+      // Telemetry route is open for active hives. We do not deactivate hives on abnormal/malformed telemetry.
+      if (hive.status === "collapsed" || hive.status === "inactive") {
         return next(
           new AppError(
             `Cannot ingest telemetry for hive '${cleanHiveId}' with status '${hive.status}'`,
@@ -107,35 +104,15 @@ export class IoTController {
         );
       }
 
-      // Helper to mark hive as Inactive / Alert state when critical/abnormal alerts fire
-      const markHiveAlertInactive = async () => {
-        try {
-          hive.status = "inactive";
-          hive.currentHealthSummary = hive.currentHealthSummary || { status: "critical" };
-          hive.currentHealthSummary.status = "critical";
-          await Hive.updateOne(
-            { hiveId: cleanHiveId },
-            {
-              $set: {
-                status: "inactive",
-                "currentHealthSummary.status": "critical",
-              },
-            }
-          );
-        } catch (err: any) {
-          console.warn(`[IoTController] Could not set hive alert state: ${err.message}`);
-        }
-      };
-
-      // 4. Immediate Sensor Value Validation (NaN, Infinity, null, non-numeric, physical bounds)
-      // Uses STATEFUL alerting — SMS fires on NEW abnormal, suppressed for CONTINUING conditions,
-      // and re-enabled after recovery. markRecovery() is called when readings return to normal.
+      // 4. Immediate Sensor Value Validation
+      // - Malformed sensor readings (NaN, null, undefined) trigger a single stateful Twilio SMS alert.
+      // - Extreme sensor values (e.g. 120°C, 120% humidity) log an in-app alert but DO NOT trigger Twilio SMS.
+      // - Telemetry route always remains open for future readings.
 
       const orgId: string | undefined = (hive as any).organizationId?.toString();
 
       // ── Temperature (-40°C to 70°C) ────────────────────────────────────────
       if (isInvalidNumber(temperature)) {
-        await markHiveAlertInactive();
         await notificationService
           .sendAbnormalReadingAlert({
             hiveId: cleanHiveId, deviceId: cleanDeviceId,
@@ -163,21 +140,7 @@ export class IoTController {
       }
 
       if (temperature < -40 || temperature > 70) {
-        await markHiveAlertInactive();
-        const dir = temperature > 70 ? "high" : "low";
-        await notificationService
-          .sendAbnormalReadingAlert({
-            hiveId: cleanHiveId, deviceId: cleanDeviceId,
-            sensorName: "temperature",
-            actualValue: `${temperature}C`,
-            expectedRange: "-40C to 70C",
-            alertType: "abnormal_temperature",
-            conditionDirection: dir,
-            timestamp: parsedTimestamp,
-            organizationId: orgId,
-          })
-          .catch((e) => console.warn(`[IoTController] Twilio alert failed: ${e.message}`));
-
+        // Extreme temperature: log in-app alert, do NOT trigger SMS, reject reading
         await alertService
           .createAlertWithCooldown({
             hiveId: cleanHiveId, apiaryId: hive.apiaryId,
@@ -192,13 +155,10 @@ export class IoTController {
       }
 
       // Temperature is NORMAL — clear any active temperature alert state
-      await notificationService.markRecovery({ hiveId: cleanHiveId, deviceId: cleanDeviceId, sensorName: "temperature", alertType: "abnormal_temperature", conditionDirection: "high" }).catch(() => {});
-      await notificationService.markRecovery({ hiveId: cleanHiveId, deviceId: cleanDeviceId, sensorName: "temperature", alertType: "abnormal_temperature", conditionDirection: "low" }).catch(() => {});
       await notificationService.markRecovery({ hiveId: cleanHiveId, deviceId: cleanDeviceId, sensorName: "temperature", alertType: "abnormal_temperature", conditionDirection: "malformed" }).catch(() => {});
 
       // ── Humidity (0% to 100%) ───────────────────────────────────────────────
       if (isInvalidNumber(humidity)) {
-        await markHiveAlertInactive();
         await notificationService
           .sendAbnormalReadingAlert({
             hiveId: cleanHiveId, deviceId: cleanDeviceId,
@@ -226,21 +186,7 @@ export class IoTController {
       }
 
       if (humidity < 0 || humidity > 100) {
-        await markHiveAlertInactive();
-        const dir = humidity > 100 ? "high" : "low";
-        await notificationService
-          .sendAbnormalReadingAlert({
-            hiveId: cleanHiveId, deviceId: cleanDeviceId,
-            sensorName: "humidity",
-            actualValue: `${humidity}%`,
-            expectedRange: "0% to 100%",
-            alertType: "abnormal_humidity",
-            conditionDirection: dir,
-            timestamp: parsedTimestamp,
-            organizationId: orgId,
-          })
-          .catch((e) => console.warn(`[IoTController] Twilio alert failed: ${e.message}`));
-
+        // Extreme humidity: log in-app alert, do NOT trigger SMS, reject reading
         await alertService
           .createAlertWithCooldown({
             hiveId: cleanHiveId, apiaryId: hive.apiaryId,
@@ -255,13 +201,10 @@ export class IoTController {
       }
 
       // Humidity is NORMAL — clear active humidity alert state
-      await notificationService.markRecovery({ hiveId: cleanHiveId, deviceId: cleanDeviceId, sensorName: "humidity", alertType: "abnormal_humidity", conditionDirection: "high" }).catch(() => {});
-      await notificationService.markRecovery({ hiveId: cleanHiveId, deviceId: cleanDeviceId, sensorName: "humidity", alertType: "abnormal_humidity", conditionDirection: "low" }).catch(() => {});
       await notificationService.markRecovery({ hiveId: cleanHiveId, deviceId: cleanDeviceId, sensorName: "humidity", alertType: "abnormal_humidity", conditionDirection: "malformed" }).catch(() => {});
 
       // ── Weight (0 kg to 300 kg) ─────────────────────────────────────────────
       if (isInvalidNumber(weightKg)) {
-        await markHiveAlertInactive();
         await notificationService
           .sendAbnormalReadingAlert({
             hiveId: cleanHiveId, deviceId: cleanDeviceId,
@@ -289,21 +232,7 @@ export class IoTController {
       }
 
       if (weightKg < 0 || weightKg > 300) {
-        await markHiveAlertInactive();
-        const dir = weightKg > 300 ? "high" : "low";
-        await notificationService
-          .sendAbnormalReadingAlert({
-            hiveId: cleanHiveId, deviceId: cleanDeviceId,
-            sensorName: "weight",
-            actualValue: `${weightKg}kg`,
-            expectedRange: "0kg to 300kg",
-            alertType: "abnormal_weight",
-            conditionDirection: dir,
-            timestamp: parsedTimestamp,
-            organizationId: orgId,
-          })
-          .catch((e) => console.warn(`[IoTController] Twilio alert failed: ${e.message}`));
-
+        // Extreme weight: log in-app alert, do NOT trigger SMS, reject reading
         await alertService
           .createAlertWithCooldown({
             hiveId: cleanHiveId, apiaryId: hive.apiaryId,
@@ -318,8 +247,6 @@ export class IoTController {
       }
 
       // Weight is NORMAL — clear active weight alert state
-      await notificationService.markRecovery({ hiveId: cleanHiveId, deviceId: cleanDeviceId, sensorName: "weight", alertType: "abnormal_weight", conditionDirection: "high" }).catch(() => {});
-      await notificationService.markRecovery({ hiveId: cleanHiveId, deviceId: cleanDeviceId, sensorName: "weight", alertType: "abnormal_weight", conditionDirection: "low" }).catch(() => {});
       await notificationService.markRecovery({ hiveId: cleanHiveId, deviceId: cleanDeviceId, sensorName: "weight", alertType: "abnormal_weight", conditionDirection: "malformed" }).catch(() => {});
 
       // Battery level check (0% to 100%)
@@ -357,7 +284,7 @@ export class IoTController {
 
       // Safe sensor readings validated — check if any active abnormal conditions remain for this hive
       const remainingActiveAlerts = await ActiveAlertState.exists({ hiveId: cleanHiveId, isActive: true });
-      if (!remainingActiveAlerts && (hive.status === "inactive" || hive.currentHealthSummary?.status === "critical")) {
+      if (!remainingActiveAlerts && hive.currentHealthSummary?.status === "critical") {
         // Safe state restored: automatically restore hive status to active
         hive.status = "active";
         hive.currentHealthSummary = hive.currentHealthSummary || { status: "healthy" };
