@@ -67,12 +67,20 @@ export default function ColonyMapInner() {
     });
     mapInstanceRef.current = map;
 
-    // 2. Add CartoDB Positron / OSM Tiles
-    L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {
-      attribution:
-        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-      subdomains: "abcd",
+    // 2. Add Base Map Tiles (OpenStreetMap default - 100% free, NO API key required)
+    const cartoKey = process.env.NEXT_PUBLIC_CARTO_API_KEY;
+    const tileUrl = cartoKey
+      ? `https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png?api_key=${cartoKey}`
+      : "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
+
+    const attribution = cartoKey
+      ? '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+      : '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+
+    L.tileLayer(tileUrl, {
+      attribution,
       maxZoom: 19,
+      subdomains: cartoKey ? "abcd" : "abc",
     }).addTo(map);
 
     let geoJsonLayer: L.GeoJSON;
