@@ -10,6 +10,7 @@ import { IconLogout } from "@tabler/icons-react";
 const navLinks = [
   { label: "How It Works", href: "/#how-it-works" },
   { label: "Features", href: "/#features" },
+  { label: "Map", href: "/#map" },
   { label: "Verify A Jar", href: "/verify" },
   { label: "About", href: "/about" },
 ];
