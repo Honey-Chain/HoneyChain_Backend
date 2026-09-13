@@ -32,7 +32,54 @@ export default function HarvestYieldCard({
   onRunPrediction,
   errorMessage,
 }: HarvestYieldCardProps) {
-  const gemini = yieldData?.geminiAnalysis;
+  const raw: any = yieldData || {};
+  const gemini = raw.geminiAnalysis || raw.gemini;
+
+  const currentWeight = Number(
+    raw.currentWeight ??
+    raw.inputWindow?.featureSummary?.currentWeight ??
+    raw.result?.metricsSnapshot?.currentWeight ??
+    0
+  );
+  const totalWeightGain14d = Number(
+    raw.totalWeightGain14d ??
+    raw.inputWindow?.featureSummary?.totalWeightGain14d ??
+    raw.result?.metricsSnapshot?.totalWeightGain14d ??
+    0
+  );
+  const gainRate7d = Number(
+    raw.gainRate7d ??
+    raw.result?.gainRate7d ??
+    raw.inputWindow?.featureSummary?.gainRate7d ??
+    0
+  );
+  const expectedHarvestWindowDays = Number(
+    raw.expectedHarvestWindowDays ??
+    raw.result?.expectedHarvestWindowDays ??
+    10
+  );
+  const harvestWindowRange = String(
+    raw.harvestWindowRange ||
+    raw.result?.harvestWindowRange ||
+    (expectedHarvestWindowDays > 0 ? `${Math.max(3, expectedHarvestWindowDays - 4)}-${expectedHarvestWindowDays + 5} days` : "10-20 days")
+  );
+  const estimatedYieldKg = Number(
+    raw.estimatedYieldKg ??
+    raw.result?.estimatedYieldKg ??
+    gemini?.estimatedYieldKg ??
+    0
+  );
+  const daysIntoFlow = Number(
+    raw.daysIntoFlow ??
+    raw.result?.daysIntoFlow ??
+    raw.inputWindow?.featureSummary?.daysIntoFlow ??
+    0
+  );
+  const confidence = String(
+    raw.confidence ||
+    raw.result?.confidenceTier ||
+    "MEDIUM"
+  );
 
   return (
     <section className="scroll-mt-6 rounded-2xl border border-black/10 bg-white p-6 shadow-xs dark:border-white/10 dark:bg-white/4 sm:p-7">
@@ -113,16 +160,16 @@ export default function HarvestYieldCard({
                   Optimal Harvest Window
                 </span>
                 <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
-                  {yieldData.confidence} Confidence
+                  {confidence} Confidence
                 </span>
               </div>
               <div className="mt-2 flex items-baseline gap-2">
                 <span className="text-2xl font-bold tracking-tight text-ink dark:text-ink-dark">
-                  {yieldData.harvestWindowRange}
+                  {harvestWindowRange}
                 </span>
               </div>
               <p className="mt-1 text-[11px] text-black/50 dark:text-white/50">
-                Target: ~{yieldData.expectedHarvestWindowDays} days remaining in nectar flow
+                Target: ~{expectedHarvestWindowDays} days remaining in nectar flow
               </p>
             </div>
 
@@ -133,14 +180,14 @@ export default function HarvestYieldCard({
               </span>
               <div className="mt-2 flex items-baseline gap-1.5">
                 <span className="text-2xl font-bold tracking-tight text-amber-600 dark:text-amber-400">
-                  {yieldData.estimatedYieldKg} kg
+                  {isNaN(estimatedYieldKg) ? "0.0" : estimatedYieldKg.toFixed(1)} kg
                 </span>
                 <span className="text-xs font-medium text-black/50 dark:text-white/50">
                   extractable surplus
                 </span>
               </div>
               <p className="mt-1 text-[11px] text-black/50 dark:text-white/50">
-                Gross weight: {yieldData.currentWeight.toFixed(1)} kg (+{yieldData.totalWeightGain14d.toFixed(1)} kg in 14d)
+                Gross weight: {isNaN(currentWeight) ? "0.0" : currentWeight.toFixed(1)} kg (+{isNaN(totalWeightGain14d) ? "0.0" : totalWeightGain14d.toFixed(1)} kg in 14d)
               </p>
             </div>
 
@@ -151,14 +198,14 @@ export default function HarvestYieldCard({
               </span>
               <div className="mt-2 flex items-baseline gap-1.5">
                 <span className="text-2xl font-bold tracking-tight text-emerald-600 dark:text-emerald-400">
-                  +{yieldData.gainRate7d.toFixed(2)}
+                  +{isNaN(gainRate7d) ? "0.00" : gainRate7d.toFixed(2)}
                 </span>
                 <span className="text-xs font-medium text-black/50 dark:text-white/50">
                   kg / day (7d avg)
                 </span>
               </div>
               <p className="mt-1 text-[11px] text-black/50 dark:text-white/50">
-                Active flow duration: {yieldData.daysIntoFlow} days
+                Active flow duration: {daysIntoFlow} days
               </p>
             </div>
 
@@ -169,7 +216,7 @@ export default function HarvestYieldCard({
               </span>
               <div className="mt-2 flex items-baseline gap-1.5">
                 <span className="text-base font-bold text-ink dark:text-ink-dark">
-                  {gemini?.harvestReadiness?.replace("_", " ") || "ACTIVE FLOW"}
+                  {gemini?.harvestReadiness ? String(gemini.harvestReadiness).replace(/_/g, " ") : "ACTIVE FLOW"}
                 </span>
               </div>
               <p className="mt-1 text-[11px] text-black/50 dark:text-white/50">
@@ -231,13 +278,13 @@ export default function HarvestYieldCard({
                   )}
 
                   {/* Actionable Steps */}
-                  {gemini.actionableSteps && gemini.actionableSteps.length > 0 && (
+                  {Array.isArray(gemini.actionableSteps) && gemini.actionableSteps.length > 0 && (
                     <div className="pt-2">
                       <h4 className="text-[11px] font-bold uppercase tracking-wider text-amber-950/70 dark:text-amber-300/70">
                         Actionable Beekeeper Checklist Before Extraction
                       </h4>
                       <ul className="mt-1.5 space-y-1 text-xs text-amber-950/90 dark:text-amber-200/90">
-                        {gemini.actionableSteps.map((step, idx) => (
+                        {gemini.actionableSteps.map((step: string, idx: number) => (
                           <li key={idx} className="flex items-start gap-2">
                             <IconCheck size={14} className="mt-0.5 shrink-0 text-emerald-600 dark:text-emerald-400" />
                             <span>{step}</span>

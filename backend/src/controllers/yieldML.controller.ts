@@ -78,9 +78,31 @@ export class YieldMLController {
         });
       }
 
+      // Normalize AIPrediction document into standard HarvestYieldData shape
+      const raw = prediction as any;
+      const normalizedData = {
+        _id: raw._id,
+        predictionId: raw.predictionId,
+        hiveId: raw.hiveId,
+        flowState: raw.result?.flowState || raw.inputWindow?.featureSummary?.flowState || "active_flow",
+        daysIntoFlow: raw.result?.daysIntoFlow ?? raw.inputWindow?.featureSummary?.daysIntoFlow ?? 0,
+        expectedHarvestWindowDays: raw.result?.expectedHarvestWindowDays ?? 10,
+        harvestWindowRange: raw.result?.harvestWindowRange || "10-20 days",
+        minDays: raw.result?.minDays ?? 0,
+        maxDays: raw.result?.maxDays ?? 0,
+        confidence: raw.result?.confidenceTier || (typeof raw.confidence === "number" ? (raw.confidence >= 0.8 ? "HIGH" : raw.confidence >= 0.6 ? "MEDIUM" : "LOW") : raw.confidence || "MEDIUM"),
+        estimatedYieldKg: raw.result?.estimatedYieldKg ?? raw.gemini?.estimatedYieldKg ?? 0,
+        gainRate7d: raw.result?.gainRate7d ?? raw.inputWindow?.featureSummary?.gainRate7d ?? 0,
+        totalWeightGain14d: raw.result?.metricsSnapshot?.totalWeightGain14d ?? raw.inputWindow?.featureSummary?.totalWeightGain14d ?? 0,
+        currentWeight: raw.inputWindow?.featureSummary?.currentWeight ?? 0,
+        modelNote: raw.result?.modelNote,
+        geminiAnalysis: raw.gemini,
+        createdAt: raw.createdAt,
+      };
+
       return res.status(200).json({
         success: true,
-        data: prediction,
+        data: normalizedData,
       });
     } catch (err) {
       return next(err);
