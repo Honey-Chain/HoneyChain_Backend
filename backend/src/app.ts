@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import mongoose from "mongoose";
+import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import batchRoutes from "./routes/batch.routes.js";
@@ -24,6 +25,10 @@ import { env } from "./config/env.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const UPLOADS_DIR = path.resolve(__dirname, "../uploads");
+const PUBLIC_DIR = path.resolve(__dirname, "../public");
+const HTML_FILE = fs.existsSync(path.join(PUBLIC_DIR, "index.html"))
+  ? path.join(PUBLIC_DIR, "index.html")
+  : path.resolve(__dirname, "../index.html");
 
 const app = express();
 
@@ -98,15 +103,19 @@ app.get("/", (req, res) => {
   if (!req.accepts("html") && req.accepts("json")) {
     return res.json({
       success: true,
-      message: "HoneyChain backend is running yehh",
+      message: "HoneyChain backend is running",
       version: "1.0.0",
       network: "Ethereum Sepolia",
     });
   }
 
-  // Fast HTML fallback for browser clients and tests
+  // Serve static HTML page if available, otherwise send inline lightweight HTML
+  if (fs.existsSync(HTML_FILE)) {
+    return res.sendFile(HTML_FILE);
+  }
+
   res.type("html").send(
-    `<!DOCTYPE html><html><head><title>HoneyChain API</title></head><body><h1>HoneyChain</h1><p>Ethereum Sepolia Batch Provenance Verification Platform API</p></body></html>`
+    `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>HoneyChain Backend</title></head><body style="font-family:system-ui,sans-serif;background:#0d0a07;color:#fbf8f2;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;"><div style="text-align:center;padding:32px;border:1px solid #2a2015;border-radius:12px;background:#14100b;max-width:520px;"><h1 style="color:#d69e1f;">HoneyChain</h1><p style="font-size:16px;font-weight:500;margin:8px 0;">This is the backend service.</p><p style="color:#a89f91;font-size:14px;">This server handles API communication and data processing for the frontend.</p></div></body></html>`
   );
 });
 
@@ -125,7 +134,8 @@ app.use("/harvests", harvestRoutes); // Frontend compatibility alias
 app.use("/api/alerts", alertRoutes);
 app.use("/api/analytics", analyticsRoutes);
 
-// Static serving for uploaded verification documents (PDFs)
+// Static serving for public landing assets and uploaded verification documents (PDFs)
+app.use(express.static(PUBLIC_DIR));
 app.use("/uploads", express.static(UPLOADS_DIR));
 
 // Dedicated Consumer QR Verification Route
