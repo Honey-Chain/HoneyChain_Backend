@@ -3,2714 +3,802 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HoneyChain &bull; API Workbench &amp; Testing Console</title>
+  <title>HoneyChain · API Workbench</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:ital,opsz,wght@0,14..32,300;0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;1,14..32,400&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"><\/script>
   <style>
-    :root {
-      --bg-base: #0a0805;
-      --bg-surface: #120e09;
-      --bg-card: #18130c;
-      --bg-input: #1f1810;
-      --bg-hover: #261f14;
-      --border-subtle: #292015;
-      --border-accent: #47351f;
-      --amber-primary: #f59e0b;
-      --amber-hover: #fbbf24;
-      --amber-dim: rgba(245, 158, 11, 0.15);
-      --amber-glow: rgba(245, 158, 11, 0.35);
-      --text-primary: #fbf8f2;
-      --text-secondary: #c7bcad;
-      --text-muted: #877d70;
-      --color-get: #10b981;
-      --color-get-bg: rgba(16, 185, 129, 0.15);
-      --color-post: #f59e0b;
-      --color-post-bg: rgba(245, 158, 11, 0.15);
-      --color-patch: #3b82f6;
-      --color-patch-bg: rgba(59, 130, 246, 0.15);
-      --color-delete: #ef4444;
-      --color-delete-bg: rgba(239, 68, 68, 0.15);
-      --color-status-2xx: #10b981;
-      --color-status-3xx: #3b82f6;
-      --color-status-4xx: #f97316;
-      --color-status-5xx: #ef4444;
-      --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      --font-mono: 'Fira Code', 'SFMono-Regular', Menlo, Monaco, Consolas, monospace;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      background-color: var(--bg-base);
-      color: var(--text-primary);
-      font-family: var(--font-ui);
-      font-size: 13px;
-      line-height: 1.5;
-      height: 100vh;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-    }
-
-    /* Top App Header */
-    header.app-header {
-      background: var(--bg-surface);
-      border-bottom: 1px solid var(--border-subtle);
-      padding: 10px 18px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      flex-shrink: 0;
-      z-index: 50;
-    }
-
-    .brand-section {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .brand-logo {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 32px;
-      height: 32px;
-      background: linear-gradient(135deg, #d97706, #f59e0b);
-      border-radius: 8px;
-      color: #000;
-      font-weight: 800;
-      font-size: 18px;
-      box-shadow: 0 0 12px var(--amber-glow);
-    }
-
-    .brand-title {
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--text-primary);
-      letter-spacing: -0.01em;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .brand-badge {
-      background: var(--amber-dim);
-      color: var(--amber-primary);
-      border: 1px solid var(--border-accent);
-      font-size: 11px;
-      padding: 2px 8px;
-      border-radius: 9999px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-    }
-
-    .header-center {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .role-pill-group {
-      display: flex;
-      align-items: center;
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      border-radius: 8px;
-      padding: 3px;
-      gap: 3px;
-    }
-
-    .role-label {
-      font-size: 11px;
-      color: var(--text-muted);
-      padding: 0 6px;
-      font-weight: 600;
-      text-transform: uppercase;
-    }
-
-    .role-btn {
-      background: transparent;
-      border: 1px solid transparent;
-      color: var(--text-secondary);
-      font-size: 11.5px;
-      font-weight: 600;
-      padding: 4px 10px;
-      border-radius: 6px;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      transition: all 0.15s ease;
-      white-space: nowrap;
-    }
-
-    .role-btn:hover {
-      background: var(--bg-hover);
-      color: var(--text-primary);
-    }
-
-    .role-btn.active {
-      background: var(--amber-primary);
-      color: #0b0907;
-      font-weight: 700;
-      box-shadow: 0 0 10px var(--amber-glow);
-    }
-
-    .role-btn.no-auth.active {
-      background: #4a5568;
-      color: #fff;
-      box-shadow: none;
-    }
-
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .status-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 4px 10px;
-      border-radius: 6px;
-      font-size: 11.5px;
-      font-weight: 600;
-      background: rgba(16, 185, 129, 0.12);
-      color: #10b981;
-      border: 1px solid rgba(16, 185, 129, 0.3);
-    }
-
-    .status-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: #10b981;
-      box-shadow: 0 0 6px #10b981;
-      animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.4; }
-    }
-
-    .active-user-pill {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: var(--bg-input);
-      border: 1px solid var(--border-accent);
-      padding: 4px 10px;
-      border-radius: 6px;
-      font-size: 11.5px;
-      color: var(--text-secondary);
-    }
-
-    .active-user-pill .user-name {
-      color: var(--text-primary);
-      font-weight: 600;
-    }
-
-    .active-user-pill .wallet-tag {
-      font-family: var(--font-mono);
-      color: var(--amber-primary);
-      background: rgba(245, 158, 11, 0.1);
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-size: 10.5px;
-    }
-
-    /* Main App Layout */
-    .app-main {
-      display: flex;
-      flex: 1;
-      height: calc(100vh - 53px);
-      overflow: hidden;
-    }
-
-    /* Left Sidebar: Endpoint Catalog */
-    aside.sidebar {
-      width: 360px;
-      min-width: 320px;
-      background: var(--bg-surface);
-      border-right: 1px solid var(--border-subtle);
-      display: flex;
-      flex-direction: column;
-      flex-shrink: 0;
-    }
-
-    .sidebar-search-box {
-      padding: 12px;
-      border-bottom: 1px solid var(--border-subtle);
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .search-input-wrapper {
-      position: relative;
-      display: flex;
-      align-items: center;
-    }
-
-    .search-input {
-      width: 100%;
-      background: var(--bg-input);
-      border: 1px solid var(--border-subtle);
-      border-radius: 6px;
-      padding: 7px 10px 7px 30px;
-      color: var(--text-primary);
-      font-size: 12.5px;
-      outline: none;
-      transition: border-color 0.15s;
-    }
-
-    .search-input:focus {
-      border-color: var(--amber-primary);
-    }
-
-    .search-icon {
-      position: absolute;
-      left: 9px;
-      color: var(--text-muted);
-      pointer-events: none;
-      font-size: 13px;
-    }
-
-    .filter-tags {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      overflow-x: auto;
-      padding-bottom: 2px;
-    }
-
-    .filter-btn {
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      color: var(--text-muted);
-      font-size: 11px;
-      padding: 3px 8px;
-      border-radius: 4px;
-      cursor: pointer;
-      white-space: nowrap;
-      transition: all 0.15s;
-    }
-
-    .filter-btn:hover {
-      color: var(--text-primary);
-      border-color: var(--border-accent);
-    }
-
-    .filter-btn.active {
-      background: var(--amber-dim);
-      color: var(--amber-primary);
-      border-color: var(--amber-primary);
-      font-weight: 600;
-    }
-
-    .endpoint-list {
-      flex: 1;
-      overflow-y: auto;
-      padding: 8px;
-    }
-
-    .category-group {
-      margin-bottom: 14px;
-    }
-
-    .category-header {
-      padding: 6px 10px;
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      cursor: pointer;
-      user-select: none;
-      border-radius: 4px;
-    }
-
-    .category-header:hover {
-      color: var(--text-secondary);
-      background: var(--bg-card);
-    }
-
-    .category-count {
-      background: var(--bg-input);
-      color: var(--text-muted);
-      font-size: 10px;
-      padding: 1px 6px;
-      border-radius: 10px;
-    }
-
-    .endpoint-item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 10px;
-      border-radius: 6px;
-      cursor: pointer;
-      margin-bottom: 2px;
-      transition: all 0.12s ease;
-      border: 1px solid transparent;
-    }
-
-    .endpoint-item:hover {
-      background: var(--bg-card);
-      border-color: var(--border-subtle);
-    }
-
-    .endpoint-item.active {
-      background: var(--bg-card);
-      border-color: var(--amber-primary);
-      box-shadow: 0 0 10px rgba(245, 158, 11, 0.12);
-    }
-
-    .method-badge {
-      font-family: var(--font-mono);
-      font-size: 10px;
-      font-weight: 700;
-      padding: 2px 6px;
-      border-radius: 4px;
-      min-width: 44px;
-      text-align: center;
-      text-transform: uppercase;
-    }
-
-    .method-badge.get {
-      background: var(--color-get-bg);
-      color: var(--color-get);
-    }
-
-    .method-badge.post {
-      background: var(--color-post-bg);
-      color: var(--color-post);
-    }
-
-    .method-badge.patch {
-      background: var(--color-patch-bg);
-      color: var(--color-patch);
-    }
-
-    .method-badge.delete {
-      background: var(--color-delete-bg);
-      color: var(--color-delete);
-    }
-
-    .endpoint-info {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .endpoint-path {
-      font-family: var(--font-mono);
-      font-size: 12px;
-      color: var(--text-primary);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .endpoint-meta {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      margin-top: 2px;
-    }
-
-    .endpoint-name {
-      font-size: 11px;
-      color: var(--text-muted);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 170px;
-    }
-
-    .rbac-tag {
-      font-size: 10px;
-      padding: 1px 5px;
-      border-radius: 3px;
-      background: var(--bg-input);
-      color: var(--amber-primary);
-      border: 1px solid var(--border-accent);
-      white-space: nowrap;
-    }
-
-    .rbac-tag.public {
-      color: var(--text-muted);
-      border-color: var(--border-subtle);
-    }
-
-    /* Right Main Panel: Workbench & Response */
-    main.workbench {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      background: var(--bg-base);
-    }
-
-    /* Request Bar */
-    .request-bar {
-      padding: 14px 18px;
-      background: var(--bg-surface);
-      border-bottom: 1px solid var(--border-subtle);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .method-select {
-      background: var(--bg-input);
-      border: 1px solid var(--border-subtle);
-      color: var(--text-primary);
-      font-family: var(--font-mono);
-      font-size: 12.5px;
-      font-weight: 700;
-      padding: 8px 12px;
-      border-radius: 6px;
-      cursor: pointer;
-      outline: none;
-    }
-
-    .method-select.get { color: var(--color-get); }
-    .method-select.post { color: var(--color-post); }
-    .method-select.patch { color: var(--color-patch); }
-    .method-select.delete { color: var(--color-delete); }
-
-    .url-input-container {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      background: var(--bg-input);
-      border: 1px solid var(--border-subtle);
-      border-radius: 6px;
-      overflow: hidden;
-      transition: border-color 0.15s;
-    }
-
-    .url-input-container:focus-within {
-      border-color: var(--amber-primary);
-    }
-
-    .url-origin-prefix {
-      padding: 8px 10px 8px 12px;
-      color: var(--text-muted);
-      font-family: var(--font-mono);
-      font-size: 12.5px;
-      background: rgba(0, 0, 0, 0.2);
-      border-right: 1px solid var(--border-subtle);
-      user-select: none;
-      white-space: nowrap;
-    }
-
-    .url-path-input {
-      flex: 1;
-      background: transparent;
-      border: none;
-      padding: 8px 12px;
-      color: var(--text-primary);
-      font-family: var(--font-mono);
-      font-size: 13px;
-      outline: none;
-    }
-
-    .btn-send {
-      background: linear-gradient(135deg, #d97706, #f59e0b);
-      color: #0b0907;
-      font-weight: 700;
-      font-size: 13px;
-      padding: 9px 22px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      transition: all 0.15s;
-      box-shadow: 0 0 12px var(--amber-glow);
-    }
-
-    .btn-send:hover {
-      background: linear-gradient(135deg, #b45309, #d97706);
-      transform: translateY(-1px);
-    }
-
-    .btn-send:active {
-      transform: translateY(0);
-    }
-
-    .btn-send:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    .btn-curl {
-      background: var(--bg-input);
-      border: 1px solid var(--border-subtle);
-      color: var(--text-secondary);
-      padding: 8px 14px;
-      border-radius: 6px;
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      transition: all 0.15s;
-    }
-
-    .btn-curl:hover {
-      border-color: var(--border-accent);
-      color: var(--text-primary);
-      background: var(--bg-hover);
-    }
-
-    /* Split Panes: Request Config (Top/Left) & Response (Bottom/Right) */
-    .workbench-split {
-      flex: 1;
-      display: grid;
-      grid-template-rows: 1fr 1fr;
-      overflow: hidden;
-      position: relative;
-    }
-
-    /* Request Config Section */
-    .request-section {
-      display: flex;
-      flex-direction: column;
-      border-bottom: 1px solid var(--border-subtle);
-      background: var(--bg-surface);
-      overflow: hidden;
-    }
-
-    .tab-bar {
-      display: flex;
-      align-items: center;
-      gap: 2px;
-      padding: 0 16px;
-      background: var(--bg-surface);
-      border-bottom: 1px solid var(--border-subtle);
-      flex-shrink: 0;
-    }
-
-    .tab-btn {
-      background: transparent;
-      border: none;
-      color: var(--text-muted);
-      font-size: 12.5px;
-      font-weight: 600;
-      padding: 10px 14px;
-      cursor: pointer;
-      position: relative;
-      transition: color 0.15s;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .tab-btn:hover {
-      color: var(--text-secondary);
-    }
-
-    .tab-btn.active {
-      color: var(--amber-primary);
-    }
-
-    .tab-btn.active::after {
-      content: '';
-      position: absolute;
-      bottom: -1px;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: var(--amber-primary);
-    }
-
-    .tab-badge {
-      background: var(--bg-card);
-      font-size: 10px;
-      padding: 1px 5px;
-      border-radius: 4px;
-      color: var(--text-muted);
-    }
-
-    .tab-content {
-      flex: 1;
-      overflow-y: auto;
-      padding: 14px 18px;
-    }
-
-    /* Key-Value / Parameters Table */
-    .kv-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 12px;
-    }
-
-    .kv-table th {
-      text-align: left;
-      padding: 6px 10px;
-      color: var(--text-muted);
-      font-size: 11px;
-      font-weight: 600;
-      border-bottom: 1px solid var(--border-subtle);
-      text-transform: uppercase;
-    }
-
-    .kv-table td {
-      padding: 6px 8px;
-      border-bottom: 1px solid rgba(41, 32, 21, 0.4);
-    }
-
-    .kv-input {
-      width: 100%;
-      background: var(--bg-input);
-      border: 1px solid var(--border-subtle);
-      border-radius: 4px;
-      padding: 6px 8px;
-      color: var(--text-primary);
-      font-family: var(--font-mono);
-      font-size: 12px;
-      outline: none;
-    }
-
-    .kv-input:focus {
-      border-color: var(--amber-primary);
-    }
-
-    .section-subtitle {
-      font-size: 11.5px;
-      font-weight: 700;
-      color: var(--amber-primary);
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      margin: 10px 0 6px 0;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    /* Code / JSON Editor */
-    .body-editor-toolbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 8px;
-    }
-
-    .editor-btn {
-      background: var(--bg-input);
-      border: 1px solid var(--border-subtle);
-      color: var(--text-secondary);
-      font-size: 11.5px;
-      padding: 4px 10px;
-      border-radius: 4px;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      transition: all 0.15s;
-    }
-
-    .editor-btn:hover {
-      background: var(--bg-hover);
-      color: var(--text-primary);
-      border-color: var(--border-accent);
-    }
-
-    .code-editor {
-      width: 100%;
-      height: 220px;
-      background: var(--bg-input);
-      border: 1px solid var(--border-subtle);
-      border-radius: 6px;
-      padding: 10px 12px;
-      color: var(--text-primary);
-      font-family: var(--font-mono);
-      font-size: 12.5px;
-      line-height: 1.5;
-      resize: vertical;
-      outline: none;
-      tab-size: 2;
-    }
-
-    .code-editor:focus {
-      border-color: var(--amber-primary);
-    }
-
-    /* Response Section */
-    .response-section {
-      display: flex;
-      flex-direction: column;
-      background: var(--bg-card);
-      overflow: hidden;
-    }
-
-    .response-header-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 8px 18px;
-      background: var(--bg-surface);
-      border-bottom: 1px solid var(--border-subtle);
-      flex-shrink: 0;
-    }
-
-    .response-meta {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .response-status-badge {
-      font-family: var(--font-mono);
-      font-weight: 700;
-      font-size: 12px;
-      padding: 3px 8px;
-      border-radius: 5px;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-    }
-
-    .status-2xx {
-      background: rgba(16, 185, 129, 0.15);
-      color: var(--color-status-2xx);
-      border: 1px solid rgba(16, 185, 129, 0.3);
-    }
-
-    .status-3xx {
-      background: rgba(59, 130, 246, 0.15);
-      color: var(--color-status-3xx);
-      border: 1px solid rgba(59, 130, 246, 0.3);
-    }
-
-    .status-4xx {
-      background: rgba(249, 115, 22, 0.15);
-      color: var(--color-status-4xx);
-      border: 1px solid rgba(249, 115, 22, 0.3);
-    }
-
-    .status-5xx {
-      background: rgba(239, 68, 68, 0.15);
-      color: var(--color-status-5xx);
-      border: 1px solid rgba(239, 68, 68, 0.3);
-    }
-
-    .response-time, .response-size {
-      font-family: var(--font-mono);
-      font-size: 11.5px;
-      color: var(--text-muted);
-    }
-
-    .response-time strong, .response-size strong {
-      color: var(--text-secondary);
-    }
-
-    .response-viewer {
-      flex: 1;
-      overflow: auto;
-      padding: 14px 18px;
-      font-family: var(--font-mono);
-      font-size: 12.5px;
-      line-height: 1.55;
-      background: var(--bg-card);
-      user-select: text;
-    }
-
-    .json-key { color: #f59e0b; }
-    .json-string { color: #10b981; }
-    .json-number { color: #38bdf8; }
-    .json-boolean { color: #a855f7; }
-    .json-null { color: #71717a; }
-
-    .empty-state {
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      color: var(--text-muted);
-      text-align: center;
-      padding: 30px;
-    }
-
-    .empty-state-icon {
-      font-size: 36px;
-      margin-bottom: 12px;
-      opacity: 0.6;
-    }
-
-    .empty-state h3 {
-      font-size: 15px;
-      color: var(--text-secondary);
-      margin-bottom: 6px;
-    }
-
-    .empty-state p {
-      font-size: 12.5px;
-      max-width: 380px;
-      line-height: 1.5;
-    }
-
-    /* RBAC Notice Banner */
-    .rbac-alert-banner {
-      background: rgba(245, 158, 11, 0.1);
-      border: 1px solid var(--amber-primary);
-      border-radius: 6px;
-      padding: 10px 14px;
-      margin-bottom: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-    }
-
-    .rbac-alert-text {
-      font-size: 12px;
-      color: var(--text-primary);
-    }
-
-    .rbac-alert-text strong {
-      color: var(--amber-primary);
-    }
-
-    .btn-switch-role {
-      background: var(--amber-primary);
-      color: #000;
-      border: none;
-      padding: 5px 12px;
-      border-radius: 4px;
-      font-size: 11.5px;
-      font-weight: 700;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-
-    /* Documentation View in Tab */
-    .docs-view {
-      line-height: 1.6;
-      color: var(--text-secondary);
-      font-size: 13px;
-    }
-
-    .docs-view h3 {
-      font-size: 16px;
-      color: var(--text-primary);
-      margin-bottom: 8px;
-    }
-
-    .docs-view p {
-      margin-bottom: 12px;
-    }
-
-    .docs-card {
-      background: var(--bg-input);
-      border: 1px solid var(--border-subtle);
-      border-radius: 6px;
-      padding: 12px;
-      margin-bottom: 12px;
-    }
-
-    .docs-card-title {
-      font-weight: 700;
-      font-size: 12px;
-      color: var(--amber-primary);
-      text-transform: uppercase;
-      margin-bottom: 6px;
-    }
-
-    /* Toast Notification */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; overflow: hidden; }
+    body { background: #080705; color: #f5f0e8; font-family: 'Inter', sans-serif; font-size: 13px; }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #3d2e18; border-radius: 99px; }
+    ::-webkit-scrollbar-thumb:hover { background: #f59e0b; }
+
+    /* JSON syntax colors */
+    .j-key  { color: #f59e0b; }
+    .j-str  { color: #34d399; }
+    .j-num  { color: #38bdf8; }
+    .j-bool { color: #c084fc; }
+    .j-null { color: #71717a; }
+
+    /* Method colors */
+    .m-GET    { background: rgba(16,185,129,0.12); color: #10b981; }
+    .m-POST   { background: rgba(245,158,11,0.12); color: #f59e0b; }
+    .m-PATCH  { background: rgba(59,130,246,0.12);  color: #60a5fa; }
+    .m-DELETE { background: rgba(239,68,68,0.12);   color: #f87171; }
+    .m-PUT    { background: rgba(139,92,246,0.12);  color: #a78bfa; }
+
+    /* Status badge */
+    .s-2xx { background: rgba(16,185,129,0.12); color: #10b981; border: 1px solid rgba(16,185,129,0.3); }
+    .s-3xx { background: rgba(59,130,246,0.12);  color: #60a5fa; border: 1px solid rgba(59,130,246,0.3); }
+    .s-4xx { background: rgba(249,115,22,0.12);  color: #fb923c; border: 1px solid rgba(249,115,22,0.3); }
+    .s-5xx { background: rgba(239,68,68,0.12);   color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
+    .s-err { background: rgba(239,68,68,0.12);   color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
+
+    /* Endpoint item */
+    .ep-item { transition: all 0.12s ease; }
+    .ep-item:hover { background: #1a140d; }
+    .ep-item.ep-active { background: #1a140d; border-color: #f59e0b !important; box-shadow: 0 0 12px rgba(245,158,11,0.1); }
+
+    /* Tab underline */
+    .tab-active { color: #f59e0b !important; position: relative; }
+    .tab-active::after {
+      content: ''; position: absolute; bottom: -1px; left: 0; right: 0;
+      height: 2px; background: #f59e0b;
+    }
+
+    /* Role button */
+    .role-btn { transition: all 0.12s ease; }
+    .role-btn.role-active {
+      background: #f59e0b; color: #0b0907; font-weight: 700;
+      box-shadow: 0 0 10px rgba(245,158,11,0.35);
+    }
+    .role-btn.role-noauth.role-active { background: #4b5563; color: #fff; box-shadow: none; }
+
+    /* Send button */
+    #sendBtn { transition: all 0.15s ease; }
+    #sendBtn:hover:not(:disabled) { transform: translateY(-1px); filter: brightness(1.1); }
+    #sendBtn:active:not(:disabled) { transform: translateY(0); }
+    #sendBtn:disabled { opacity: 0.55; transform: none; cursor: not-allowed; }
+
+    /* Pulse */
+    .pulse-dot { animation: pulseDot 2s ease-in-out infinite; }
+    @keyframes pulseDot { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+    /* Toast */
     #toast {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: #1f1810;
-      border: 1px solid var(--amber-primary);
-      color: var(--text-primary);
-      padding: 10px 16px;
-      border-radius: 6px;
-      font-size: 12px;
-      font-weight: 600;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
-      z-index: 100;
-      opacity: 0;
-      transform: translateY(10px);
-      transition: all 0.2s ease;
-      pointer-events: none;
+      position: fixed; bottom: 20px; right: 20px;
+      background: #1a140d; border: 1px solid #f59e0b;
+      color: #f5f0e8; padding: 10px 18px; border-radius: 8px;
+      font-size: 12px; font-weight: 600;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+      z-index: 1000; opacity: 0; transform: translateY(8px);
+      transition: all 0.2s ease; pointer-events: none;
+    }
+    #toast.toast-show { opacity: 1; transform: translateY(0); }
+
+    /* Code textarea */
+    .code-area {
+      font-family: 'Fira Code', monospace; font-size: 12px;
+      background: #100d08; border: 1px solid #221b11; border-radius: 6px;
+      color: #f5f0e8; padding: 10px 12px; width: 100%;
+      resize: vertical; outline: none; line-height: 1.6; min-height: 180px;
+    }
+    .code-area:focus { border-color: #f59e0b; }
+
+    /* KV inputs */
+    .kv-input {
+      width: 100%; background: #100d08; border: 1px solid #221b11;
+      border-radius: 4px; color: #f5f0e8;
+      font-family: 'Fira Code', monospace; font-size: 11.5px;
+      padding: 5px 8px; outline: none;
+    }
+    .kv-input:focus { border-color: #f59e0b; }
+    .kv-input[readonly] { opacity: 0.55; cursor: default; }
+
+    .kv-row { border-bottom: 1px solid rgba(34,27,17,0.7); }
+
+    /* Response pre */
+    #resBody {
+      font-family: 'Fira Code', monospace; font-size: 12px;
+      line-height: 1.6; white-space: pre-wrap; word-break: break-all; margin: 0;
     }
 
-    #toast.show {
-      opacity: 1;
-      transform: translateY(0);
+    /* Sidebar category */
+    .cat-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.07em;
+      text-transform: uppercase; color: #7a6e60; padding: 10px 10px 4px;
     }
 
-    /* Scrollbars */
-    ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
+    /* URL bar focus */
+    #urlBar:focus-within { border-color: #f59e0b !important; }
+
+    /* RBAC banner */
+    .rbac-banner {
+      background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.35);
+      border-radius: 6px; padding: 8px 12px; margin-bottom: 10px;
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
     }
-    ::-webkit-scrollbar-track {
-      background: transparent;
+
+    /* Ghost btn */
+    .ghost-btn {
+      background: #1a140d; border: 1px solid #221b11; color: #c2b5a4;
+      font-size: 11.5px; padding: 5px 12px; border-radius: 5px; cursor: pointer;
+      transition: all 0.12s ease;
     }
-    ::-webkit-scrollbar-thumb {
-      background: var(--border-subtle);
-      border-radius: 3px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: var(--border-accent);
-    }
+    .ghost-btn:hover { border-color: #3d2e18; color: #f5f0e8; }
   </style>
 </head>
-<body>
+<body style="display:flex;flex-direction:column;height:100vh;">
 
-  <!-- App Header -->
-  <header class="app-header">
-    <div class="brand-section">
-      <div class="brand-logo">&#x2B22;</div>
-      <div>
-        <div class="brand-title">
-          HoneyChain
-          <span class="brand-badge">API Testing Workbench</span>
-        </div>
-      </div>
+<!-- ═══════ HEADER ═══════ -->
+<header style="background:#0f0c08;border-bottom:1px solid #221b11;display:flex;align-items:center;justify-content:space-between;padding:8px 16px;gap:12px;flex-shrink:0;z-index:50;">
+
+  <!-- Brand -->
+  <div style="display:flex;align-items:center;gap:10px;flex-shrink:0;">
+    <div style="width:30px;height:30px;border-radius:7px;background:linear-gradient(135deg,#d97706,#f59e0b);display:flex;align-items:center;justify-content:center;font-size:17px;box-shadow:0 0 14px rgba(245,158,11,0.32);">⬢</div>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span style="font-size:14px;font-weight:700;letter-spacing:-0.01em;">HoneyChain</span>
+      <span style="background:rgba(245,158,11,0.1);color:#f59e0b;border:1px solid rgba(245,158,11,0.28);font-size:10px;font-weight:700;padding:2px 8px;border-radius:99px;text-transform:uppercase;letter-spacing:0.05em;">API Workbench</span>
     </div>
-
-    <!-- 1-Click RBAC Stakeholder Switcher -->
-    <div class="header-center">
-      <div class="role-pill-group">
-        <span class="role-label">RBAC Persona:</span>
-        <button class="role-btn active" data-role="admin" onclick="switchRole('admin')">
-          <span>👑</span> Admin
-        </button>
-        <button class="role-btn" data-role="beekeeper" onclick="switchRole('beekeeper')">
-          <span>🐝</span> Beekeeper
-        </button>
-        <button class="role-btn" data-role="lab" onclick="switchRole('lab')">
-          <span>🧪</span> Lab
-        </button>
-        <button class="role-btn" data-role="processor" onclick="switchRole('processor')">
-          <span>🏭</span> Processor
-        </button>
-        <button class="role-btn" data-role="distributor" onclick="switchRole('distributor')">
-          <span>🚚</span> Distributor
-        </button>
-        <button class="role-btn" data-role="auditor" onclick="switchRole('auditor')">
-          <span>🔍</span> Auditor
-        </button>
-        <button class="role-btn no-auth" data-role="none" onclick="switchRole('none')">
-          <span>🔓</span> No Auth
-        </button>
-      </div>
-    </div>
-
-    <div class="header-right">
-      <div class="active-user-pill" id="activeUserBadge">
-        <span id="activeUserRoleTag">👑 ADMIN</span>
-        <span class="user-name" id="activeUserName">System Admin</span>
-        <span class="wallet-tag" id="activeUserWallet" title="Ethereum Sepolia Wallet">0x65af...208d</span>
-      </div>
-      <div class="status-badge" id="systemHealthBadge">
-        <span class="status-dot"></span>
-        <span id="systemHealthText">Sepolia (11155111)</span>
-      </div>
-    </div>
-  </header>
-
-  <!-- Main Container -->
-  <div class="app-main">
-
-    <!-- Left Sidebar: Endpoint Catalog -->
-    <aside class="sidebar">
-      <div class="sidebar-search-box">
-        <div class="search-input-wrapper">
-          <span class="search-icon">&#128269;</span>
-          <input type="text" id="endpointSearchInput" class="search-input" placeholder="Filter endpoints (e.g. batches, telemetry, GET)..." oninput="filterEndpoints()">
-        </div>
-        <div class="filter-tags">
-          <button class="filter-btn active" data-category="all" onclick="filterByCategory('all')">All (<span id="totalEndpointCount">0</span>)</button>
-          <button class="filter-btn" data-category="batches" onclick="filterByCategory('batches')">Batches</button>
-          <button class="filter-btn" data-category="iot" onclick="filterByCategory('iot')">IoT</button>
-          <button class="filter-btn" data-category="ml" onclick="filterByCategory('ml')">AI / ML</button>
-          <button class="filter-btn" data-category="auth" onclick="filterByCategory('auth')">Auth</button>
-          <button class="filter-btn" data-category="orgs" onclick="filterByCategory('orgs')">Orgs</button>
-          <button class="filter-btn" data-category="sanctuary" onclick="filterByCategory('sanctuary')">Apiaries</button>
-          <button class="filter-btn" data-category="analytics" onclick="filterByCategory('analytics')">Analytics</button>
-        </div>
-      </div>
-
-      <div class="endpoint-list" id="endpointList">
-        <!-- Rendered dynamically -->
-      </div>
-    </aside>
-
-    <!-- Main Workbench Area -->
-    <main class="workbench">
-
-      <!-- Top Request Execution Bar -->
-      <div class="request-bar">
-        <select id="reqMethodSelect" class="method-select get" onchange="updateMethodClass()">
-          <option value="GET">GET</option>
-          <option value="POST">POST</option>
-          <option value="PATCH">PATCH</option>
-          <option value="DELETE">DELETE</option>
-        </select>
-
-        <div class="url-input-container">
-          <span class="url-origin-prefix" id="urlOriginPrefix">http://localhost:5000</span>
-          <input type="text" id="reqPathInput" class="url-path-input" value="/health" placeholder="/api/endpoint" oninput="handleManualPathChange()">
-        </div>
-
-        <button id="sendBtn" class="btn-send" onclick="executeCurrentRequest()">
-          <span id="sendBtnIcon">&#9654;</span> Send Request
-        </button>
-
-        <button class="btn-curl" onclick="copyAsCurl()" title="Copy as cURL command">
-          <span>&lt;/&gt;</span> cURL
-        </button>
-      </div>
-
-      <!-- Workbench Split View -->
-      <div class="workbench-split">
-
-        <!-- Top Half: Request Configuration -->
-        <div class="request-section">
-          <div class="tab-bar">
-            <button class="tab-btn active" data-tab="params" onclick="switchReqTab('params')">
-              Params <span class="tab-badge" id="paramCountBadge">0</span>
-            </button>
-            <button class="tab-btn" data-tab="body" onclick="switchReqTab('body')">
-              Body <span class="tab-badge" id="bodyStatusBadge">JSON</span>
-            </button>
-            <button class="tab-btn" data-tab="headers" onclick="switchReqTab('headers')">
-              Headers <span class="tab-badge" id="headerCountBadge">2</span>
-            </button>
-            <button class="tab-btn" data-tab="auth" onclick="switchReqTab('auth')">
-              Auth &amp; RBAC
-            </button>
-            <button class="tab-btn" data-tab="docs" onclick="switchReqTab('docs')">
-              Docs &amp; Schema
-            </button>
-          </div>
-
-          <div class="tab-content" id="reqTabContent">
-
-            <!-- Tab: Parameters (Path Variables & Query Params) -->
-            <div id="tabPaneParams">
-              <div id="pathParamsSection" style="display: none;">
-                <div class="section-subtitle">&#128279; Path Variables (Auto-substituted in URL)</div>
-                <table class="kv-table" style="margin-bottom: 16px;">
-                  <thead>
-                    <tr>
-                      <th style="width: 30%;">Variable</th>
-                      <th style="width: 50%;">Value</th>
-                      <th style="width: 20%;">Description</th>
-                    </tr>
-                  </thead>
-                  <tbody id="pathParamsTbody">
-                    <!-- Injected dynamically -->
-                  </tbody>
-                </table>
-              </div>
-
-              <div class="section-subtitle">&#128269; Query Parameters</div>
-              <table class="kv-table">
-                <thead>
-                  <tr>
-                    <th style="width: 10%; text-align: center;">Enable</th>
-                    <th style="width: 30%;">Key</th>
-                    <th style="width: 40%;">Value</th>
-                    <th style="width: 20%;">Description</th>
-                  </tr>
-                </thead>
-                <tbody id="queryParamsTbody">
-                  <!-- Injected dynamically -->
-                </tbody>
-              </table>
-              <div style="margin-top: 10px;">
-                <button class="editor-btn" onclick="addCustomQueryParam()">+ Add Query Param</button>
-              </div>
-            </div>
-
-            <!-- Tab: Request Body -->
-            <div id="tabPaneBody" style="display: none;">
-              <div class="body-editor-toolbar">
-                <div style="font-size: 12px; color: var(--text-secondary);">
-                  Format: <strong style="color: var(--amber-primary);">JSON (application/json)</strong>
-                </div>
-                <div style="display: flex; gap: 8px;">
-                  <button class="editor-btn" onclick="formatRequestBodyJSON()">&#128065; Format JSON</button>
-                  <button class="editor-btn" onclick="resetDefaultPayload()">&#8634; Reset Default</button>
-                  <button class="editor-btn" onclick="clearRequestBody()">&#10005; Clear</button>
-                </div>
-              </div>
-              <textarea id="reqBodyEditor" class="code-editor" spellcheck="false" placeholder="Enter JSON request payload..."></textarea>
-            </div>
-
-            <!-- Tab: Headers -->
-            <div id="tabPaneHeaders" style="display: none;">
-              <table class="kv-table">
-                <thead>
-                  <tr>
-                    <th style="width: 35%;">Header</th>
-                    <th style="width: 55%;">Value</th>
-                    <th style="width: 10%;">Managed</th>
-                  </tr>
-                </thead>
-                <tbody id="headersTbody">
-                  <tr>
-                    <td style="font-family: var(--font-mono); color: var(--amber-primary);">Content-Type</td>
-                    <td><input type="text" class="kv-input" value="application/json" readonly></td>
-                    <td style="color: var(--text-muted); font-size: 11px;">Auto</td>
-                  </tr>
-                  <tr>
-                    <td style="font-family: var(--font-mono); color: var(--amber-primary);">Authorization</td>
-                    <td><input type="text" id="headerAuthInput" class="kv-input" placeholder="Bearer <token>" readonly></td>
-                    <td style="color: var(--text-muted); font-size: 11px;">RBAC Token</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-
-            <!-- Tab: Auth & RBAC -->
-            <div id="tabPaneAuth" style="display: none;">
-              <div class="docs-card">
-                <div class="docs-card-title">&#128273; Active Persona Authentication</div>
-                <p style="margin-bottom: 8px; color: var(--text-secondary);">
-                  Select any stakeholder role in the header to instantly simulate their session with genuine JWT tokens generated from database seed accounts.
-                </p>
-                <div style="display: grid; grid-template-columns: 140px 1fr; gap: 8px; font-size: 12px; margin-top: 10px;">
-                  <div style="color: var(--text-muted);">Current Role:</div>
-                  <div id="authRoleDisplay" style="color: var(--amber-primary); font-weight: 700;">admin</div>
-                  <div style="color: var(--text-muted);">Email Account:</div>
-                  <div id="authEmailDisplay" style="font-family: var(--font-mono);">admin@honeychain.org</div>
-                  <div style="color: var(--text-muted);">Sepolia Wallet:</div>
-                  <div id="authWalletDisplay" style="font-family: var(--font-mono); word-break: break-all;">0x65af...</div>
-                  <div style="color: var(--text-muted);">JWT Bearer:</div>
-                  <div style="word-break: break-all; font-family: var(--font-mono); font-size: 11px; color: var(--text-muted);" id="authTokenDisplay">eyJhbGciOi...</div>
-                </div>
-              </div>
-              <div style="display: flex; gap: 8px; margin-top: 10px;">
-                <button class="editor-btn" onclick="copyActiveToken()">Copy JWT Token</button>
-                <button class="editor-btn" onclick="switchRole('none')">Clear Authentication (Test 401/403)</button>
-              </div>
-            </div>
-
-            <!-- Tab: Docs & Schema -->
-            <div id="tabPaneDocs" style="display: none;">
-              <div class="docs-view" id="endpointDocsContainer">
-                <!-- Injected dynamically -->
-              </div>
-            </div>
-
-          </div>
-        </div>
-
-        <!-- Bottom Half: Response Inspector -->
-        <div class="response-section">
-          <div class="response-header-bar">
-            <div class="response-meta">
-              <span style="font-weight: 600; color: var(--text-muted); font-size: 11.5px; text-transform: uppercase;">Response:</span>
-              <span id="resStatusBadge" class="response-status-badge status-2xx" style="display: none;">200 OK</span>
-              <span id="resTimeBadge" class="response-time" style="display: none;">Time: <strong id="resTimeVal">0 ms</strong></span>
-              <span id="resSizeBadge" class="response-size" style="display: none;">Size: <strong id="resSizeVal">0 B</strong></span>
-            </div>
-            <div style="display: flex; gap: 6px;">
-              <button class="editor-btn" onclick="copyResponseBody()">&#128203; Copy Response</button>
-            </div>
-          </div>
-
-          <div class="response-viewer" id="responseViewer">
-            <div class="empty-state" id="responseEmptyState">
-              <div class="empty-state-icon">&#x2B22;</div>
-              <h3>Ready to Send Request</h3>
-              <p>Choose an API endpoint from the sidebar on the left, select an RBAC persona, and click <strong>Send Request</strong> to execute real backend calls.</p>
-            </div>
-            <pre id="responseJsonPre" style="display: none; margin: 0;"></pre>
-          </div>
-        </div>
-
-      </div>
-    </main>
   </div>
 
-  <!-- Toast Notification -->
-  <div id="toast">Copied to clipboard!</div>
+  <!-- RBAC Switcher -->
+  <div style="display:flex;align-items:center;gap:4px;flex:1;justify-content:center;flex-wrap:wrap;">
+    <span style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:#7a6e60;margin-right:4px;">Persona:</span>
+    <button class="role-btn role-active" data-role="admin"       onclick="switchRole('admin')"       style="font-size:11.5px;font-weight:600;padding:4px 10px;border-radius:6px;border:1px solid transparent;cursor:pointer;display:inline-flex;align-items:center;gap:4px;color:#c2b5a4;background:transparent;">👑 Admin</button>
+    <button class="role-btn"             data-role="beekeeper"   onclick="switchRole('beekeeper')"   style="font-size:11.5px;font-weight:600;padding:4px 10px;border-radius:6px;border:1px solid transparent;cursor:pointer;display:inline-flex;align-items:center;gap:4px;color:#c2b5a4;background:transparent;">🐝 Beekeeper</button>
+    <button class="role-btn"             data-role="lab"         onclick="switchRole('lab')"         style="font-size:11.5px;font-weight:600;padding:4px 10px;border-radius:6px;border:1px solid transparent;cursor:pointer;display:inline-flex;align-items:center;gap:4px;color:#c2b5a4;background:transparent;">🧪 Lab</button>
+    <button class="role-btn"             data-role="processor"   onclick="switchRole('processor')"   style="font-size:11.5px;font-weight:600;padding:4px 10px;border-radius:6px;border:1px solid transparent;cursor:pointer;display:inline-flex;align-items:center;gap:4px;color:#c2b5a4;background:transparent;">🏭 Processor</button>
+    <button class="role-btn"             data-role="distributor" onclick="switchRole('distributor')" style="font-size:11.5px;font-weight:600;padding:4px 10px;border-radius:6px;border:1px solid transparent;cursor:pointer;display:inline-flex;align-items:center;gap:4px;color:#c2b5a4;background:transparent;">🚚 Distributor</button>
+    <button class="role-btn"             data-role="auditor"     onclick="switchRole('auditor')"     style="font-size:11.5px;font-weight:600;padding:4px 10px;border-radius:6px;border:1px solid transparent;cursor:pointer;display:inline-flex;align-items:center;gap:4px;color:#c2b5a4;background:transparent;">🔍 Auditor</button>
+    <button class="role-btn role-noauth" data-role="none"        onclick="switchRole('none')"        style="font-size:11.5px;font-weight:600;padding:4px 10px;border-radius:6px;border:1px solid transparent;cursor:pointer;display:inline-flex;align-items:center;gap:4px;color:#c2b5a4;background:transparent;">🔓 No Auth</button>
+  </div>
 
-  <script>
-    /* =========================================================================
-       HoneyChain Endpoints Registry & Metadata
-       ========================================================================= */
-    const ENDPOINTS = [
-      // --- System & Network ---
-      {
-        id: "sys-health",
-        category: "sys",
-        categoryName: "System & Network",
-        name: "Health & Network Check",
-        method: "GET",
-        path: "/health",
-        rbac: ["public"],
-        description: "Returns production operational health, MongoDB connection state, and Ethereum Sepolia testnet parameters.",
-        defaultParams: {},
-        defaultQueryParams: [],
-        defaultBody: null
-      },
-      {
-        id: "sys-wallets",
-        category: "sys",
-        categoryName: "System & Network",
-        name: "Stakeholder Sepolia Wallets",
-        method: "GET",
-        path: "/api/auth/wallets",
-        rbac: ["public"],
-        description: "Returns public Ethereum Sepolia wallet addresses configured for all 5 HoneyChain stakeholder roles.",
-        defaultParams: {},
-        defaultQueryParams: [],
-        defaultBody: null
-      },
-      {
-        id: "sys-verify-qr",
-        category: "sys",
-        categoryName: "System & Network",
-        name: "Consumer QR Verification (JSON)",
-        method: "GET",
-        path: "/api/verify/:batchId",
-        rbac: ["public"],
-        description: "Public consumer verification endpoint returning complete cryptographic and laboratory provenance.",
-        defaultParams: { batchId: "HC-DEMO-SUNDAR-2025-01" },
-        defaultQueryParams: [],
-        defaultBody: null
-      },
+  <!-- User Pill + Health -->
+  <div style="display:flex;align-items:center;gap:10px;flex-shrink:0;">
+    <div id="userPill" style="background:#1a140d;border:1px solid #3d2e18;border-radius:7px;padding:5px 11px;display:flex;align-items:center;gap:8px;font-size:11.5px;">
+      <span id="userTag" style="font-weight:700;color:#f59e0b;">👑 ADMIN</span>
+      <span id="userName" style="color:#f5f0e8;font-weight:600;">System Admin</span>
+      <span id="userWallet" title="" style="font-family:'Fira Code',monospace;font-size:10px;background:rgba(245,158,11,0.1);color:#f59e0b;padding:2px 6px;border-radius:4px;">0x65af…208d</span>
+    </div>
+    <div id="healthBadge" style="display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:6px;font-size:11.5px;font-weight:600;background:rgba(16,185,129,0.1);color:#10b981;border:1px solid rgba(16,185,129,0.25);">
+      <span class="pulse-dot" style="width:7px;height:7px;border-radius:50%;background:#10b981;display:inline-block;"></span>
+      <span id="healthTxt">Sepolia (11155111)</span>
+    </div>
+  </div>
+</header>
 
-      // --- Authentication & RBAC ---
-      {
-        id: "auth-login",
-        category: "auth",
-        categoryName: "Authentication & RBAC",
-        name: "Stakeholder Login",
-        method: "POST",
-        path: "/api/auth/login",
-        rbac: ["public"],
-        description: "Authenticates stakeholder credentials and issues a signed JWT token with assigned role & organization.",
-        defaultParams: {},
-        defaultQueryParams: [],
-        defaultBody: {
-          email: "beekeeper@honeychain.org",
-          password: "Password123!"
-        }
-      },
-      {
-        id: "auth-me",
-        category: "auth",
-        categoryName: "Authentication & RBAC",
-        name: "Current Session Profile",
-        method: "GET",
-        path: "/api/auth/me",
-        rbac: ["all-authenticated"],
-        description: "Returns authenticated user account profile, assigned role permissions, and active blockchain wallet address.",
-        defaultParams: {},
-        defaultQueryParams: [],
-        defaultBody: null
-      },
-      {
-        id: "auth-users-get",
-        category: "auth",
-        categoryName: "Authentication & RBAC",
-        name: "List Registered Users",
-        method: "GET",
-        path: "/api/auth/users",
-        rbac: ["admin"],
-        description: "Admin only: lists all registered platform users and their roles.",
-        defaultParams: {},
-        defaultQueryParams: [],
-        defaultBody: null
-      },
-      {
-        id: "auth-users-create",
-        category: "auth",
-        categoryName: "Authentication & RBAC",
-        name: "Provision User Account",
-        method: "POST",
-        path: "/api/auth/users",
-        rbac: ["admin"],
-        description: "Admin only: provisions a new HoneyChain user with designated role (beekeeper, lab, processor, distributor, auditor).",
-        defaultParams: {},
-        defaultQueryParams: [],
-        defaultBody: {
-          name: "Dr. Kabir Roy",
-          email: "kabir.roy@honeychain.org",
-          password: "Password123!",
-          role: "lab"
-        }
-      },
-      {
-        id: "auth-logout",
-        category: "auth",
-        categoryName: "Authentication & RBAC",
-        name: "Logout Session",
-        method: "POST",
-        path: "/api/auth/logout",
-        rbac: ["public"],
-        description: "Clears session authentication cookies.",
-        defaultParams: {},
-        defaultQueryParams: [],
-        defaultBody: {}
-      },
+<!-- ═══════ BODY ═══════ -->
+<div style="display:flex;flex:1;overflow:hidden;">
 
-      // --- Batches (Ethereum Sepolia Provenance) ---
-      {
-        id: "batch-list",
-        category: "batches",
-        categoryName: "Honey Batches (Sepolia)",
-        name: "List Harvest Batches",
-        method: "GET",
-        path: "/api/batches",
-        rbac: ["all-authenticated"],
-        description: "Lists batches with tenant isolation and status filters (Registered, Certified, InTransit, Delivered, Recalled).",
-        defaultParams: {},
-        defaultQueryParams: [
-          { key: "page", value: "1", enabled: true, desc: "Page number" },
-          { key: "limit", value: "20", enabled: true, desc: "Items per page" },
-          { key: "status", value: "Registered", enabled: false, desc: "Batch status filter" }
-        ],
-        defaultBody: null
-      },
-      {
-        id: "batch-get",
-        category: "batches",
-        categoryName: "Honey Batches (Sepolia)",
-        name: "Get Batch by ID",
-        method: "GET",
-        path: "/api/batches/:batchId",
-        rbac: ["all-authenticated"],
-        description: "Retrieves complete batch provenance, custody history, laboratory assay, and Sepolia transaction hashes.",
-        defaultParams: { batchId: "HC-DEMO-SUNDAR-2025-01" },
-        defaultQueryParams: [],
-        defaultBody: null
-      },
-      {
-        id: "batch-register",
-        category: "batches",
-        categoryName: "Honey Batches (Sepolia)",
-        name: "Register Batch on Sepolia",
-        method: "POST",
-        path: "/api/batches",
-        rbac: ["beekeeper"],
-        description: "Beekeeper only: registers a new harvest batch directly on the Ethereum Sepolia smart contract.",
-        defaultParams: {},
-        defaultQueryParams: [],
-        defaultBody: {
-          batchId: "HC-BATCH-" + Date.now(),
-          quantityGrams: 50000,
-          floralOrigin: "Sundarbans Wild Mangrove (Khalisha)",
-          sourceHives: ["HIVE-001", "HIVE-002"],
-          apiaryLocation: {
-            latitude: 21.9497,
-            longitude: 89.1833,
-            region: "Sundarbans Biosphere Reserve, West Bengal"
-          },
-          extraMetadata: {
-            harvestMethod: "Cold-filtered traditional artisanal extraction",
-            organicCertified: true
-          }
-        }
-      },
-      {
-        id: "batch-certify",
-        category: "batches",
-        categoryName: "Honey Batches (Sepolia)",
-        name: "Certify Quality Assay",
-        method: "POST",
-        path: "/api/batches/:batchId/quality",
-        rbac: ["lab"],
-        description: "Laboratory only: records quality grade (GradeA/GradeB/GradeC/Substandard) and moisture on-chain.",
-        defaultParams: { batchId: "HC-DEMO-SUNDAR-2025-01" },
-        defaultQueryParams: [],
-        defaultBody: {
-          grade: "GradeA",
-          moisturePercentage: 17.2,
-          labReportData: {
-            fructoseGlucoseRatio: 1.25,
-            hmfMgKg: 12.4,
-            diastaseNumber: 18.0,
-            antibioticResidues: "ND (Not Detected)"
-          }
-        }
-      },
-      {
-        id: "batch-custody-propose",
-        category: "batches",
-        categoryName: "Honey Batches (Sepolia)",
-        name: "Propose Custody Handshake (Step 1)",
-        method: "POST",
-        path: "/api/batches/:batchId/custody/propose",
-        rbac: ["beekeeper", "processor", "distributor", "admin"],
-        description: "Two-step handshake step 1: Current custodian proposes custody transfer to a specific recipient address on-chain.",
-        defaultParams: { batchId: "HC-DEMO-SUNDAR-2025-01" },
-        defaultQueryParams: [],
-        defaultBody: {
-          to: "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
-          location: "Kolkata Cold-Chain Transit Hub",
-          role: "processor"
-        }
-      },
-      {
-        id: "batch-custody-accept",
-        category: "batches",
-        categoryName: "Honey Batches (Sepolia)",
-        name: "Accept Custody Handshake (Step 2)",
-        method: "POST",
-        path: "/api/batches/:batchId/custody/accept",
-        rbac: ["processor", "distributor", "admin"],
-        description: "Two-step handshake step 2: Designated recipient signs and accepts custody on Ethereum Sepolia.",
-        defaultParams: { batchId: "HC-DEMO-SUNDAR-2025-01" },
-        defaultQueryParams: [],
-        defaultBody: {
-          role: "processor"
-        }
-      },
-      {
-        id: "batch-deliver",
-        category: "batches",
-        categoryName: "Honey Batches (Sepolia)",
-        name: "Deliver Batch to Retail",
-        method: "POST",
-        path: "/api/batches/:batchId/deliver",
-        rbac: ["distributor", "processor", "admin"],
-        description: "Marks batch as Delivered to retail point-of-sale destination on Ethereum Sepolia.",
-        defaultParams: { batchId: "HC-DEMO-SUNDAR-2025-01" },
-        defaultQueryParams: [],
-        defaultBody: {
-          location: "Organic Cooperative Flagship Store, Kolkata",
-          role: "distributor"
-        }
-      },
-      {
-        id: "batch-review-req",
-        category: "batches",
-        categoryName: "Honey Batches (Sepolia)",
-        name: "Request Auditor Review",
-        method: "POST",
-        path: "/api/batches/:batchId/review-request",
-        rbac: ["beekeeper", "lab", "processor", "distributor", "auditor", "admin"],
-        description: "Submits a formal auditor review request for batch investigation.",
-        defaultParams: { batchId: "HC-DEMO-SUNDAR-2025-01" },
-        defaultQueryParams: [],
-        defaultBody: {
-          reason: "Moisture assay variance requires compliance auditor verification prior to retail packaging.",
-          role: "processor"
-        }
-      },
-      {
-        id: "batch-review-clear",
-        category: "batches",
-        categoryName: "Honey Batches (Sepolia)",
-        name: "Clear Auditor Review",
-        method: "POST",
-        path: "/api/batches/:batchId/review-request/:requestId/clear",
-        rbac: ["auditor", "admin"],
-        description: "Auditor/Admin only: clears active review request and authorizes batch progression.",
-        defaultParams: { batchId: "HC-DEMO-SUNDAR-2025-01", requestId: "1" },
-        defaultQueryParams: [],
-        defaultBody: {
-          note: "Auditor reviewed calibration records; certified within compliance limits."
-        }
-      },
-      {
-        id: "batch-reject",
-        category: "batches",
-        categoryName: "Honey Batches (Sepolia)",
-        name: "Reject & Recall Batch",
-        method: "POST",
-        path: "/api/batches/:batchId/reject",
-        rbac: ["auditor", "admin"],
-        description: "Auditor/Admin only: formally rejects batch and permanently flags as Recalled on-chain.",
-        defaultParams: { batchId: "HC-DEMO-SUNDAR-2025-01" },
-        defaultQueryParams: [],
-        defaultBody: {
-          requestId: 1,
-          reason: "Batch failed FSSAI purity standards due to moisture excess."
-        }
-      },
-      {
-        id: "batch-qr",
-        category: "batches",
-        categoryName: "Honey Batches (Sepolia)",
-        name: "Generate Packaging QR Code",
-        method: "GET",
-        path: "/api/batches/:batchId/qr",
-        rbac: ["processor", "beekeeper", "admin", "auditor", "distributor"],
-        description: "Generates high-resolution PNG Data URL and SVG QR codes for retail jar packaging.",
-        defaultParams: { batchId: "HC-DEMO-SUNDAR-2025-01" },
-        defaultQueryParams: [],
-        defaultBody: null
-      },
+  <!-- ── SIDEBAR ── -->
+  <aside style="width:340px;min-width:290px;background:#0f0c08;border-right:1px solid #221b11;display:flex;flex-direction:column;flex-shrink:0;">
 
-      // --- Organizations & Tenant Governance ---
-      {
-        id: "orgs-apply",
-        category: "orgs",
-        categoryName: "Organizations & Governance",
-        name: "Submit Onboarding Application",
-        method: "POST",
-        path: "/api/organizations/apply",
-        rbac: ["public"],
-        description: "Public: submits an enterprise registration application to join HoneyChain as a verified stakeholder.",
-        defaultParams: {},
-        defaultQueryParams: [],
-        defaultBody: {
-          organizationName: "Darjeeling Mountain Apiaries",
-          role: "beekeeper",
-          registrationNumber: "COOP-WB-2025-441",
-          taxId: "19AABCK9988Z1Z5",
-          contactEmail: "contact@darjeeling-apiary.org",
-          contactPhone: "+919830112233",
-          address: {
-            street: "24 Tea Garden Road",
-            city: "Darjeeling",
-            state: "West Bengal",
-            postalCode: "734101",
-            country: "India"
-          },
-          adminUser: {
-            name: "Bikram Thapa",
-            email: "bikram@darjeeling-apiary.org"
-          }
-        }
-      },
-      {
-        id: "orgs-applications-list",
-        category: "orgs",
-        categoryName: "Organizations & Governance",
-        name: "List Applications",
-        method: "GET",
-        path: "/api/organizations/applications",
-        rbac: ["admin"],
-        description: "Admin only: lists pending and reviewed organization onboarding applications.",
-        defaultParams: {},
-        defaultQueryParams: [
-          { key: "status", value: "PENDING", enabled: true, desc: "Status filter" },
-          { key: "page", value: "1", enabled: true, desc: "Page" },
-          { key: "limit", value: "20", enabled: true, desc: "Limit" }
-        ],
-        defaultBody: null
-      },
-      {
-        id: "orgs-my",
-        category: "orgs",
-        categoryName: "Organizations & Governance",
-        name: "My Organization Profile",
-        method: "GET",
-        path: "/api/organizations/my",
-        rbac: ["all-authenticated"],
-        description: "Returns the organization profile and blockchain wallet associated with the caller.",
-        defaultParams: {},
-        defaultQueryParams: [],
-        defaultBody: null
-      },
-      {
-        id: "orgs-list-all",
-        category: "orgs",
-        categoryName: "Organizations & Governance",
-        name: "List All Organizations",
-        method: "GET",
-        path: "/api/organizations",
-        rbac: ["admin"],
-        description: "Admin only: lists all verified stakeholder organizations across the platform.",
-        defaultParams: {},
-        defaultQueryParams: [],
-        defaultBody: null
-      },
+    <!-- Search + Category filters -->
+    <div style="padding:10px;border-bottom:1px solid #221b11;">
+      <div style="position:relative;margin-bottom:8px;">
+        <span style="position:absolute;left:9px;top:50%;transform:translateY(-50%);color:#7a6e60;pointer-events:none;font-size:12px;">🔍</span>
+        <input id="searchInput" type="text" placeholder="Search endpoints, methods…" oninput="filterEndpoints()"
+          style="width:100%;background:#100d08;border:1px solid #221b11;border-radius:6px;padding:7px 10px 7px 28px;color:#f5f0e8;font-size:12px;outline:none;transition:border-color 0.15s;"
+          onfocus="this.style.borderColor='#f59e0b'" onblur="this.style.borderColor='#221b11'">
+      </div>
+      <div style="display:flex;gap:4px;flex-wrap:wrap;">
+        <button class="filter-btn" data-cat="all"       onclick="filterByCategory('all')"       style="font-size:10.5px;padding:3px 9px;border-radius:4px;border:1px solid #f59e0b;background:rgba(245,158,11,0.1);color:#f59e0b;cursor:pointer;font-weight:600;">All <span id="totalCount">0</span></button>
+        <button class="filter-btn" data-cat="batches"   onclick="filterByCategory('batches')"   style="font-size:10.5px;padding:3px 9px;border-radius:4px;border:1px solid #221b11;background:#141008;color:#7a6e60;cursor:pointer;">Batches</button>
+        <button class="filter-btn" data-cat="iot"       onclick="filterByCategory('iot')"       style="font-size:10.5px;padding:3px 9px;border-radius:4px;border:1px solid #221b11;background:#141008;color:#7a6e60;cursor:pointer;">IoT</button>
+        <button class="filter-btn" data-cat="ml"        onclick="filterByCategory('ml')"        style="font-size:10.5px;padding:3px 9px;border-radius:4px;border:1px solid #221b11;background:#141008;color:#7a6e60;cursor:pointer;">AI / ML</button>
+        <button class="filter-btn" data-cat="auth"      onclick="filterByCategory('auth')"      style="font-size:10.5px;padding:3px 9px;border-radius:4px;border:1px solid #221b11;background:#141008;color:#7a6e60;cursor:pointer;">Auth</button>
+        <button class="filter-btn" data-cat="orgs"      onclick="filterByCategory('orgs')"      style="font-size:10.5px;padding:3px 9px;border-radius:4px;border:1px solid #221b11;background:#141008;color:#7a6e60;cursor:pointer;">Orgs</button>
+        <button class="filter-btn" data-cat="sanctuary" onclick="filterByCategory('sanctuary')" style="font-size:10.5px;padding:3px 9px;border-radius:4px;border:1px solid #221b11;background:#141008;color:#7a6e60;cursor:pointer;">Apiaries</button>
+        <button class="filter-btn" data-cat="analytics" onclick="filterByCategory('analytics')" style="font-size:10.5px;padding:3px 9px;border-radius:4px;border:1px solid #221b11;background:#141008;color:#7a6e60;cursor:pointer;">Analytics</button>
+      </div>
+    </div>
 
-      // --- Apiaries & Hives (Sanctuary Management) ---
-      {
-        id: "apiaries-list",
-        category: "sanctuary",
-        categoryName: "Sanctuary Apiaries & Hives",
-        name: "List Apiaries",
-        method: "GET",
-        path: "/api/apiaries",
-        rbac: ["all-authenticated"],
-        description: "Lists apiary sanctuaries with geographic coordinates and populated hives.",
-        defaultParams: {},
-        defaultQueryParams: [
-          { key: "page", value: "1", enabled: true, desc: "Page" },
-          { key: "limit", value: "20", enabled: true, desc: "Limit" }
-        ],
-        defaultBody: null
-      },
-      {
-        id: "apiaries-create",
-        category: "sanctuary",
-        categoryName: "Sanctuary Apiaries & Hives",
-        name: "Create Apiary Sanctuary",
-        method: "POST",
-        path: "/api/apiaries",
-        rbac: ["beekeeper", "admin"],
-        description: "Beekeeper/Admin: provisions a new geo-located bee sanctuary.",
-        defaultParams: {},
-        defaultQueryParams: [],
-        defaultBody: {
-          name: "Sundarbans Mangrove Delta Sanctuary",
-          location: {
-            latitude: 21.9497,
-            longitude: 89.1833,
-            region: "Sundarbans Biosphere Reserve",
-            address: "Gosaba Island, South 24 Parganas, West Bengal"
-          },
-          floraType: ["Khalisha (Aegiceras)", "Goran", "Bani"],
-          capacity: 25,
-          notes: "Protected UNESCO bio-reserve buffer zone."
-        }
-      },
-      {
-        id: "hives-list",
-        category: "sanctuary",
-        categoryName: "Sanctuary Apiaries & Hives",
-        name: "List Hives",
-        method: "GET",
-        path: "/api/hives",
-        rbac: ["all-authenticated"],
-        description: "Lists hives with health scores, species, and edge IoT gateway status.",
-        defaultParams: {},
-        defaultQueryParams: [
-          { key: "status", value: "active", enabled: true, desc: "Hive status" }
-        ],
-        defaultBody: null
-      },
-      {
-        id: "hives-get",
-        category: "sanctuary",
-        categoryName: "Sanctuary Apiaries & Hives",
-        name: "Get Hive Details",
-        method: "GET",
-        path: "/api/hives/:hiveId",
-        rbac: ["all-authenticated"],
-        description: "Retrieves complete hive profile, queen genetics, and current health summary.",
-        defaultParams: { hiveId: "HIVE-001" },
-        defaultQueryParams: [],
-        defaultBody: null
-      },
-      {
-        id: "harvests-list",
-        category: "sanctuary",
-        categoryName: "Sanctuary Apiaries & Hives",
-        name: "List Harvests",
-        method: "GET",
-        path: "/api/harvests",
-        rbac: ["all-authenticated"],
-        description: "Lists raw honey harvests recorded across colonies.",
-        defaultParams: {},
-        defaultQueryParams: [],
-        defaultBody: null
-      },
-      {
-        id: "harvests-create",
-        category: "sanctuary",
-        categoryName: "Sanctuary Apiaries & Hives",
-        name: "Record New Harvest",
-        method: "POST",
-        path: "/api/harvests",
-        rbac: ["beekeeper", "admin"],
-        description: "Beekeeper/Admin: logs honey extraction quantity, floral nectar origin, and date.",
-        defaultParams: {},
-        defaultQueryParams: [],
-        defaultBody: {
-          hiveId: "HIVE-001",
-          quantityGrams: 16500,
-          floralOrigin: "Sundarbans Wild Mangrove Blossom",
-          notes: "Excellent amber clarity with 17.1% moisture."
-        }
-      },
+    <!-- Endpoint list -->
+    <div id="endpointList" style="flex:1;overflow-y:auto;padding:6px;"></div>
+  </aside>
 
-      // --- IoT Telemetry & Edge Gateway ---
-      {
-        id: "iot-telemetry-ingest",
-        category: "iot",
-        categoryName: "IoT Telemetry & Gateway",
-        name: "Ingest Sensor Telemetry",
-        method: "POST",
-        path: "/api/iot/telemetry",
-        rbac: ["public"],
-        description: "Edge hardware ingestion endpoint with biological validation (32-37C) and downsampled persistence.",
-        defaultParams: {},
-        defaultQueryParams: [],
-        defaultBody: {
-          deviceId: "ESP32-HIVE-001",
-          hiveId: "HIVE-001",
-          timestamp: new Date().toISOString(),
-          temperature: 34.6,
-          humidity: 58.2,
-          weightKg: 32.85,
-          soundFrequencyHz: 212,
-          acousticsDb: 61.5,
-          batteryLevelPct: 96,
-          ambientTemperature: 25.8,
-          ambientHumidity: 62.0,
-          flow: 25,
-          beeInCount: 38,
-          beeOutCount: 31
-        }
-      },
-      {
-        id: "iot-telemetry-recent",
-        category: "iot",
-        categoryName: "IoT Telemetry & Gateway",
-        name: "Recent Telemetry Buffer",
-        method: "GET",
-        path: "/api/iot/telemetry/:hiveId/recent",
-        rbac: ["all-authenticated"],
-        description: "Retrieves latest 10 sensor telemetry readings from Redis rolling buffer.",
-        defaultParams: { hiveId: "HIVE-001" },
-        defaultQueryParams: [],
-        defaultBody: null
-      },
-      {
-        id: "iot-telemetry-history",
-        category: "iot",
-        categoryName: "IoT Telemetry & Gateway",
-        name: "Time-Series Telemetry History",
-        method: "GET",
-        path: "/api/iot/telemetry/:hiveId",
-        rbac: ["public"],
-        description: "Chronological sensor data for charts with resolution filters (raw | hourly).",
-        defaultParams: { hiveId: "HIVE-001" },
-        defaultQueryParams: [
-          { key: "limit", value: "50", enabled: true, desc: "Max readings" },
-          { key: "resolution", value: "raw", enabled: true, desc: "raw or hourly" }
-        ],
-        defaultBody: null
-      },
-      {
-        id: "iot-device-status",
-        category: "iot",
-        categoryName: "IoT Telemetry & Gateway",
-        name: "Edge Device Hardware Status",
-        method: "GET",
-        path: "/api/iot/devices/:deviceId/status",
-        rbac: ["public"],
-        description: "Diagnostic connectivity check for ESP32 edge microcontrollers.",
-        defaultParams: { deviceId: "ESP32-HIVE-001" },
-        defaultQueryParams: [],
-        defaultBody: null
-      },
-      {
-        id: "iot-simulate",
-        category: "iot",
-        categoryName: "IoT Telemetry & Gateway",
-        name: "Trigger On-Demand Sensor Cycle",
-        method: "POST",
-        path: "/api/iot/simulate",
-        rbac: ["public"],
-        description: "Simulates an on-demand real-time telemetry cycle for active colonies directly in the database.",
-        defaultParams: {},
-        defaultQueryParams: [],
-        defaultBody: {}
-      },
+  <!-- ── MAIN WORKBENCH ── -->
+  <main style="flex:1;display:flex;flex-direction:column;overflow:hidden;background:#080705;">
 
-      // --- Machine Learning & AI Diagnostics ---
-      {
-        id: "ml-health",
-        category: "ml",
-        categoryName: "AI & ML Intelligence",
-        name: "Colony Health ML Microservice Status",
-        method: "GET",
-        path: "/api/ml/health",
-        rbac: ["public"],
-        description: "Health probe for the external Python ML inference service.",
-        defaultParams: {},
-        defaultQueryParams: [],
-        defaultBody: null
-      },
-      {
-        id: "ml-predict",
-        category: "ml",
-        categoryName: "AI & ML Intelligence",
-        name: "Trigger Colony Health Inference",
-        method: "POST",
-        path: "/api/ml/predict/:hiveId",
-        rbac: ["public"],
-        description: "Executes ML colony anomaly detection with Gemini LLM biological diagnostics.",
-        defaultParams: { hiveId: "HIVE-001" },
-        defaultQueryParams: [
-          { key: "forceAi", value: "true", enabled: true, desc: "Force AI reasoning" }
-        ],
-        defaultBody: {}
-      },
-      {
-        id: "ml-latest",
-        category: "ml",
-        categoryName: "AI & ML Intelligence",
-        name: "Latest Colony Health Prediction",
-        method: "GET",
-        path: "/api/ml/latest/:hiveId",
-        rbac: ["public"],
-        description: "Retrieves the most recent AI diagnostic prediction for a hive.",
-        defaultParams: { hiveId: "HIVE-001" },
-        defaultQueryParams: [],
-        defaultBody: null
-      },
-      {
-        id: "ml-yield-health",
-        category: "ml",
-        categoryName: "AI & ML Intelligence",
-        name: "Yield & Harvest ML Status",
-        method: "GET",
-        path: "/api/ml/yield/health",
-        rbac: ["public"],
-        description: "Checks connectivity of the Yield Production & Harvest Window prediction service.",
-        defaultParams: {},
-        defaultQueryParams: [],
-        defaultBody: null
-      },
-      {
-        id: "ml-yield-predict",
-        category: "ml",
-        categoryName: "AI & ML Intelligence",
-        name: "Predict Honey Yield & Harvest Window",
-        method: "POST",
-        path: "/api/ml/yield/predict/:hiveId",
-        rbac: ["public"],
-        description: "Evaluates nectar flow curve, weight gain rates, and forecasts optimal harvest window.",
-        defaultParams: { hiveId: "HIVE-001" },
-        defaultQueryParams: [
-          { key: "forceAi", value: "true", enabled: true, desc: "Include Gemini analysis" }
-        ],
-        defaultBody: {}
-      },
-      {
-        id: "ml-yield-latest",
-        category: "ml",
-        categoryName: "AI & ML Intelligence",
-        name: "Latest Yield Prediction",
-        method: "GET",
-        path: "/api/ml/yield/latest/:hiveId",
-        rbac: ["public"],
-        description: "Returns the latest estimated yield (kg) and harvest window forecast.",
-        defaultParams: { hiveId: "HIVE-001" },
-        defaultQueryParams: [],
-        defaultBody: null
-      },
+    <!-- URL bar -->
+    <div style="padding:12px 16px;background:#0f0c08;border-bottom:1px solid #221b11;display:flex;align-items:center;gap:8px;flex-shrink:0;">
+      <select id="methodSel" onchange="onMethodChange()"
+        style="background:#1a140d;border:1px solid #221b11;border-radius:6px;padding:8px 10px;font-family:'Fira Code',monospace;font-size:12.5px;font-weight:700;cursor:pointer;outline:none;color:#10b981;min-width:90px;">
+        <option value="GET">GET</option>
+        <option value="POST">POST</option>
+        <option value="PATCH">PATCH</option>
+        <option value="DELETE">DELETE</option>
+        <option value="PUT">PUT</option>
+      </select>
 
-      // --- Alerts & Incidents ---
-      {
-        id: "alerts-list",
-        category: "alerts",
-        categoryName: "Alerts & Incidents",
-        name: "List Alerts",
-        method: "GET",
-        path: "/api/alerts",
-        rbac: ["all-authenticated"],
-        description: "Lists active or resolved biological alerts (hypothermia, swarming, low battery).",
-        defaultParams: {},
-        defaultQueryParams: [
-          { key: "isResolved", value: "false", enabled: true, desc: "Active alerts" }
-        ],
-        defaultBody: null
-      },
-      {
-        id: "alerts-resolve",
-        category: "alerts",
-        categoryName: "Alerts & Incidents",
-        name: "Resolve Alert",
-        method: "PATCH",
-        path: "/api/alerts/:id/resolve",
-        rbac: ["all-authenticated"],
-        description: "Marks an alert as investigated and resolved by authorized staff.",
-        defaultParams: { id: "65d8a9b1c2e3f4a5b6c7d8e9" },
-        defaultQueryParams: [],
-        defaultBody: {}
-      },
+      <div id="urlBar" style="flex:1;display:flex;align-items:center;background:#1a140d;border:1px solid #221b11;border-radius:6px;overflow:hidden;transition:border-color 0.15s;">
+        <span id="urlOrigin" style="padding:8px 10px 8px 12px;color:#7a6e60;font-family:'Fira Code',monospace;font-size:12px;background:rgba(0,0,0,0.2);border-right:1px solid #221b11;white-space:nowrap;user-select:none;"></span>
+        <input id="pathInput" type="text" value="/health"
+          style="flex:1;background:transparent;border:none;padding:8px 12px;color:#f5f0e8;font-family:'Fira Code',monospace;font-size:13px;outline:none;">
+      </div>
 
-      // --- Analytics & Geographic Clusters ---
-      {
-        id: "analytics-dashboard",
-        category: "analytics",
-        categoryName: "Analytics & Reports",
-        name: "Operational Dashboard Analytics",
-        method: "GET",
-        path: "/api/analytics/dashboard",
-        rbac: ["all-authenticated"],
-        description: "Role-scoped aggregations covering active hives, batch counts, weight production, and IoT telemetry.",
-        defaultParams: {},
-        defaultQueryParams: [],
-        defaultBody: null
-      },
-      {
-        id: "analytics-clusters",
-        category: "analytics",
-        categoryName: "Analytics & Reports",
-        name: "Geographic Sanctuary Clusters",
-        method: "GET",
-        path: "/api/analytics/clusters",
-        rbac: ["all-authenticated"],
-        description: "Aggregates sanctuaries by region into beekeeping clusters for regional supply monitoring.",
-        defaultParams: {},
-        defaultQueryParams: [],
-        defaultBody: null
-      }
-    ];
+      <button id="sendBtn" onclick="executeRequest()"
+        style="background:linear-gradient(135deg,#d97706,#f59e0b);color:#0a0700;font-weight:700;font-size:13px;padding:9px 22px;border:none;border-radius:6px;cursor:pointer;display:flex;align-items:center;gap:6px;box-shadow:0 0 14px rgba(245,158,11,0.28);">
+        <span id="sendIcon">▶</span> Send
+      </button>
 
-    /* =========================================================================
-       Demo Stakeholder Users Database (Pre-seeded in HoneyChain)
-       ========================================================================= */
-    const DEMO_USERS = {
-      admin: {
-        role: "admin",
-        roleTag: "👑 ADMIN",
-        name: "System Administrator",
-        email: "admin@honeychain.org",
-        wallet: "0x65afF3B44441FfF68171a9a0AA28063BC83C208d",
-        org: "HoneyChain Authority"
-      },
-      beekeeper: {
-        role: "beekeeper",
-        roleTag: "🐝 BEEKEEPER",
-        name: "Rajesh Kumar",
-        email: "beekeeper@honeychain.org",
-        wallet: "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
-        org: "Sundarbans Apiary Cooperative"
-      },
-      lab: {
-        role: "lab",
-        roleTag: "🧪 LAB",
-        name: "Dr. Ananya Sen",
-        email: "lab@honeychain.org",
-        wallet: "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
-        org: "National Honey Quality Lab"
-      },
-      processor: {
-        role: "processor",
-        roleTag: "🏭 PROCESSOR",
-        name: "Vikram Patel",
-        email: "processor@honeychain.org",
-        wallet: "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
-        org: "Bengal Organic Processing"
-      },
-      distributor: {
-        role: "distributor",
-        roleTag: "🚚 DISTRIBUTOR",
-        name: "Gurpreet Singh",
-        email: "distributor@honeychain.org",
-        wallet: "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
-        org: "SafeHive Cold Chain Logistics"
-      },
-      auditor: {
-        role: "auditor",
-        roleTag: "🔍 AUDITOR",
-        name: "Priya Sharma",
-        email: "auditor@honeychain.org",
-        wallet: "0x9965507D1a55bcC2695C58ba16FB37d819B0A4dc",
-        org: "FSSAI Compliance Bureau"
-      },
-      none: {
-        role: "none",
-        roleTag: "🔓 PUBLIC",
-        name: "Unauthenticated Guest",
-        email: "guest@honeychain.org",
-        wallet: "No Wallet Assigned",
-        org: "Public Visitor"
-      }
-    };
+      <button onclick="copyAsCurl()" title="Copy as cURL"
+        style="background:#1a140d;border:1px solid #221b11;color:#c2b5a4;padding:8px 13px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all 0.12s;"
+        onmouseover="this.style.borderColor='#3d2e18';this.style.color='#f5f0e8'"
+        onmouseout="this.style.borderColor='#221b11';this.style.color='#c2b5a4'">&lt;/&gt; cURL</button>
+    </div>
 
-    /* =========================================================================
-       Application State
-       ========================================================================= */
-    const state = {
-      activeRole: "admin",
-      tokens: {}, // role -> jwt token string
-      currentEndpoint: null,
-      customQueryParams: [],
-      pathParamValues: {},
-      selectedCategory: "all",
-      searchQuery: "",
-      baseUrl: window.location.origin
-    };
+    <!-- Split view: Request (top) / Response (bottom) -->
+    <div style="flex:1;display:grid;grid-template-rows:1fr 1fr;overflow:hidden;">
 
-    /* =========================================================================
-       Initialization
-       ========================================================================= */
-    window.addEventListener("DOMContentLoaded", async () => {
-      // Set Base URL prefix
-      document.getElementById("urlOriginPrefix").textContent = state.baseUrl;
-      document.getElementById("totalEndpointCount").textContent = ENDPOINTS.length;
+      <!-- REQUEST CONFIG -->
+      <div style="display:flex;flex-direction:column;border-bottom:1px solid #221b11;background:#0f0c08;overflow:hidden;">
 
-      // Check system health
-      checkSystemHealth();
+        <!-- Tabs -->
+        <div style="display:flex;align-items:center;padding:0 16px;border-bottom:1px solid #221b11;flex-shrink:0;background:#0f0c08;">
+          <button class="tab-btn tab-active" data-tab="params"  onclick="switchTab('params')"  style="font-size:12.5px;font-weight:600;padding:10px 14px;border:none;background:transparent;cursor:pointer;color:#f59e0b;display:flex;align-items:center;gap:5px;position:relative;">Params <span id="paramBadge" style="background:#141008;font-size:10px;padding:1px 5px;border-radius:4px;color:#7a6e60;">0</span></button>
+          <button class="tab-btn"            data-tab="body"    onclick="switchTab('body')"    style="font-size:12.5px;font-weight:600;padding:10px 14px;border:none;background:transparent;cursor:pointer;color:#7a6e60;display:flex;align-items:center;gap:5px;position:relative;">Body <span style="background:#141008;font-size:10px;padding:1px 5px;border-radius:4px;color:#7a6e60;">JSON</span></button>
+          <button class="tab-btn"            data-tab="headers" onclick="switchTab('headers')" style="font-size:12.5px;font-weight:600;padding:10px 14px;border:none;background:transparent;cursor:pointer;color:#7a6e60;position:relative;">Headers</button>
+          <button class="tab-btn"            data-tab="auth"    onclick="switchTab('auth')"    style="font-size:12.5px;font-weight:600;padding:10px 14px;border:none;background:transparent;cursor:pointer;color:#7a6e60;position:relative;">Auth &amp; RBAC</button>
+          <button class="tab-btn"            data-tab="docs"    onclick="switchTab('docs')"    style="font-size:12.5px;font-weight:600;padding:10px 14px;border:none;background:transparent;cursor:pointer;color:#7a6e60;position:relative;">Docs &amp; Schema</button>
+        </div>
 
-      // Render Endpoints
-      renderEndpointList();
+        <!-- Pane content -->
+        <div style="flex:1;overflow-y:auto;padding:14px 16px;">
 
-      // Attempt login as default admin role to seed auth token
-      await loginRole("admin", false);
+          <!-- PARAMS PANE -->
+          <div id="paneParams">
+            <div id="rbacBanner" class="rbac-banner" style="display:none;">
+              <div style="font-size:12px;color:#f5f0e8;">⚠ <strong>RBAC Notice:</strong> <span id="rbacBannerTxt"></span></div>
+              <button id="rbacSwitchBtn" style="background:#f59e0b;color:#0b0907;border:none;padding:4px 12px;border-radius:4px;font-size:11.5px;font-weight:700;cursor:pointer;white-space:nowrap;"></button>
+            </div>
 
-      // Select default endpoint
-      selectEndpoint(ENDPOINTS[0]);
-    });
+            <!-- Path params -->
+            <div id="pathParamSec" style="display:none;margin-bottom:14px;">
+              <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:#f59e0b;margin-bottom:8px;">🔗 Path Variables</div>
+              <table style="width:100%;border-collapse:collapse;">
+                <thead><tr style="border-bottom:1px solid #221b11;">
+                  <th style="text-align:left;padding:5px 8px;font-size:11px;color:#7a6e60;font-weight:600;text-transform:uppercase;width:30%;">Variable</th>
+                  <th style="text-align:left;padding:5px 8px;font-size:11px;color:#7a6e60;font-weight:600;text-transform:uppercase;width:50%;">Value</th>
+                  <th style="text-align:left;padding:5px 8px;font-size:11px;color:#7a6e60;font-weight:600;text-transform:uppercase;width:20%;">Type</th>
+                </tr></thead>
+                <tbody id="pathParamBody"></tbody>
+              </table>
+            </div>
 
-    async function checkSystemHealth() {
-      const badge = document.getElementById("systemHealthBadge");
-      const text = document.getElementById("systemHealthText");
-      try {
-        const res = await fetch(`${state.baseUrl}/health`);
-        const json = await res.json();
-        if (json.status === "ok") {
-          badge.style.background = "rgba(16, 185, 129, 0.12)";
-          badge.style.color = "#10b981";
-          badge.style.borderColor = "rgba(16, 185, 129, 0.3)";
-          text.textContent = `Online • ${json.blockchain?.network || "Sepolia"} (11155111)`;
-        } else {
-          badge.style.background = "rgba(249, 115, 22, 0.12)";
-          badge.style.color = "#f97316";
-          text.textContent = `Degraded • ${json.blockchain?.network || "Sepolia"}`;
-        }
-      } catch (e) {
-        badge.style.background = "rgba(239, 68, 68, 0.12)";
-        badge.style.color = "#ef4444";
-        text.textContent = "Offline / Error";
-      }
-    }
+            <!-- Query params -->
+            <div>
+              <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:#f59e0b;margin-bottom:8px;">🔎 Query Parameters</div>
+              <table style="width:100%;border-collapse:collapse;">
+                <thead><tr style="border-bottom:1px solid #221b11;">
+                  <th style="text-align:center;padding:5px 8px;font-size:11px;color:#7a6e60;font-weight:600;text-transform:uppercase;width:10%;">On</th>
+                  <th style="text-align:left;padding:5px 8px;font-size:11px;color:#7a6e60;font-weight:600;text-transform:uppercase;width:30%;">Key</th>
+                  <th style="text-align:left;padding:5px 8px;font-size:11px;color:#7a6e60;font-weight:600;text-transform:uppercase;width:40%;">Value</th>
+                  <th style="text-align:left;padding:5px 8px;font-size:11px;color:#7a6e60;font-weight:600;text-transform:uppercase;width:20%;">Desc</th>
+                </tr></thead>
+                <tbody id="queryParamBody"></tbody>
+              </table>
+              <button onclick="addQueryParam()" class="ghost-btn" style="margin-top:10px;">+ Add Param</button>
+            </div>
+          </div>
 
-    /* =========================================================================
-       RBAC Authentication & Role Management
-       ========================================================================= */
-    async function switchRole(role) {
-      // Update UI active role buttons
-      document.querySelectorAll(".role-btn").forEach(btn => {
-        btn.classList.toggle("active", btn.getAttribute("data-role") === role);
-      });
-
-      state.activeRole = role;
-
-      if (role === "none") {
-        updateActiveUserBadge(DEMO_USERS.none, "");
-        showToast("Switched to Unauthenticated mode (Authorization header removed)");
-        updateHeadersView();
-        return;
-      }
-
-      await loginRole(role, true);
-    }
-
-    async function loginRole(role, notify) {
-      const userDef = DEMO_USERS[role];
-      if (!userDef) return;
-
-      try {
-        // If token already cached in memory or localStorage, reuse or refresh
-        const cached = localStorage.getItem(`hc_token_${role}`);
-        if (cached) {
-          state.tokens[role] = cached;
-          updateActiveUserBadge(userDef, cached);
-          updateHeadersView();
-          if (notify) showToast(`Authenticated as ${userDef.name} (${userDef.roleTag})`);
-          return;
-        }
-
-        // Real API call to /api/auth/login
-        const res = await fetch(`${state.baseUrl}/api/auth/login`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email: userDef.email, password: "Password123!" })
-        });
-
-        const data = await res.json();
-        if (data.success && data.token) {
-          state.tokens[role] = data.token;
-          localStorage.setItem(`hc_token_${role}`, data.token);
-          updateActiveUserBadge(userDef, data.token);
-          updateHeadersView();
-          if (notify) showToast(`Logged in successfully as ${userDef.name} (${userDef.roleTag})`);
-        } else {
-          updateActiveUserBadge(userDef, "offline-simulated");
-          if (notify) showToast(`Login response: ${data.message || 'Check credentials'}`);
-        }
-      } catch (err) {
-        console.warn("Auto-login error:", err);
-        updateActiveUserBadge(userDef, "");
-      }
-    }
-
-    function updateActiveUserBadge(user, token) {
-      document.getElementById("activeUserRoleTag").textContent = user.roleTag;
-      document.getElementById("activeUserName").textContent = user.name;
-      const shortWallet = user.wallet.length > 14 ? `${user.wallet.substring(0, 6)}...${user.wallet.substring(user.wallet.length - 4)}` : user.wallet;
-      document.getElementById("activeUserWallet").textContent = shortWallet;
-      document.getElementById("activeUserWallet").title = user.wallet;
-
-      // Auth tab updates
-      document.getElementById("authRoleDisplay").textContent = user.role;
-      document.getElementById("authEmailDisplay").textContent = user.email;
-      document.getElementById("authWalletDisplay").textContent = user.wallet;
-      document.getElementById("authTokenDisplay").textContent = token ? token.substring(0, 32) + "..." : "None (Unauthenticated)";
-
-      // Headers update
-      document.getElementById("headerAuthInput").value = token ? `Bearer ${token}` : "None";
-    }
-
-    /* =========================================================================
-       Endpoint Listing & Selection
-       ========================================================================= */
-    function renderEndpointList() {
-      const container = document.getElementById("endpointList");
-      container.innerHTML = "";
-
-      const query = state.searchQuery.toLowerCase();
-      const filtered = ENDPOINTS.filter(ep => {
-        const matchesCat = state.selectedCategory === "all" || ep.category === state.selectedCategory;
-        const matchesQuery = !query ||
-          ep.name.toLowerCase().includes(query) ||
-          ep.path.toLowerCase().includes(query) ||
-          ep.method.toLowerCase().includes(query) ||
-          ep.rbac.some(r => r.toLowerCase().includes(query));
-        return matchesCat && matchesQuery;
-      });
-
-      // Group by categoryName
-      const groups = {};
-      filtered.forEach(ep => {
-        groups[ep.categoryName] = groups[ep.categoryName] || [];
-        groups[ep.categoryName].push(ep);
-      });
-
-      for (const [catName, list] of Object.entries(groups)) {
-        const groupEl = document.createElement("div");
-        groupEl.className = "category-group";
-
-        const headerEl = document.createElement("div");
-        headerEl.className = "category-header";
-        headerEl.innerHTML = `<span>${catName}</span><span class="category-count">${list.length}</span>`;
-        groupEl.appendChild(headerEl);
-
-        list.forEach(ep => {
-          const itemEl = document.createElement("div");
-          itemEl.className = `endpoint-item ${state.currentEndpoint?.id === ep.id ? 'active' : ''}`;
-          itemEl.onclick = () => selectEndpoint(ep);
-
-          const rbacLabel = ep.rbac.includes("public")
-            ? '<span class="rbac-tag public">Public</span>'
-            : `<span class="rbac-tag">&#128274; ${ep.rbac.join(", ")}</span>`;
-
-          itemEl.innerHTML = `
-            <span class="method-badge ${ep.method.toLowerCase()}">${ep.method}</span>
-            <div class="endpoint-info">
-              <div class="endpoint-path">${escapeHtml(ep.path)}</div>
-              <div class="endpoint-meta">
-                <span class="endpoint-name">${escapeHtml(ep.name)}</span>
-                ${rbacLabel}
+          <!-- BODY PANE -->
+          <div id="paneBody" style="display:none;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+              <div style="font-size:12px;color:#c2b5a4;">Format: <strong style="color:#f59e0b;">JSON (application/json)</strong></div>
+              <div style="display:flex;gap:6px;">
+                <button onclick="formatJson()" class="ghost-btn" style="font-size:11px;padding:4px 10px;">👁 Format</button>
+                <button onclick="resetBody()"  class="ghost-btn" style="font-size:11px;padding:4px 10px;">↺ Reset</button>
+                <button onclick="clearBody()"  class="ghost-btn" style="font-size:11px;padding:4px 10px;">✕ Clear</button>
               </div>
             </div>
-          `;
-          groupEl.appendChild(itemEl);
-        });
-
-        container.appendChild(groupEl);
-      }
-    }
-
-    function selectEndpoint(ep) {
-      state.currentEndpoint = ep;
-
-      // Highlight active in sidebar
-      document.querySelectorAll(".endpoint-item").forEach(item => item.classList.remove("active"));
-      renderEndpointList();
-
-      // Update Method & Path
-      const methodSelect = document.getElementById("reqMethodSelect");
-      methodSelect.value = ep.method;
-      updateMethodClass();
-
-      // Reset path values with defaults
-      state.pathParamValues = { ...ep.defaultParams };
-      updateRenderedPath();
-
-      // Populate Path Params Table
-      renderPathParams(ep);
-
-      // Populate Query Params Table
-      renderQueryParams(ep);
-
-      // Populate Body
-      const bodyEditor = document.getElementById("reqBodyEditor");
-      if (ep.defaultBody && (ep.method === "POST" || ep.method === "PATCH")) {
-        bodyEditor.value = JSON.stringify(ep.defaultBody, null, 2);
-      } else {
-        bodyEditor.value = "";
-      }
-
-      // Populate Docs tab
-      renderDocsTab(ep);
-
-      // Update header preview
-      updateHeadersView();
-
-      // If endpoint requires specific role and current role is not authorized, prompt gently
-      checkRoleAuthorization(ep);
-    }
-
-    function updateMethodClass() {
-      const select = document.getElementById("reqMethodSelect");
-      select.className = `method-select ${select.value.toLowerCase()}`;
-    }
-
-    function handleManualPathChange() {
-      // User typed directly into path input
-    }
-
-    function updateRenderedPath() {
-      if (!state.currentEndpoint) return;
-      let path = state.currentEndpoint.path;
-
-      // Substitute :param with state.pathParamValues
-      for (const [key, val] of Object.entries(state.pathParamValues)) {
-        path = path.replace(`:${key}`, encodeURIComponent(val || `:${key}`));
-      }
-
-      // Append enabled query params
-      const qParams = collectEnabledQueryParams();
-      if (qParams.toString()) {
-        path += (path.includes("?") ? "&" : "?") + qParams.toString();
-      }
-
-      document.getElementById("reqPathInput").value = path;
-    }
-
-    function renderPathParams(ep) {
-      const pathMatches = ep.path.match(/:[a-zA-Z0-9_]+/g) || [];
-      const section = document.getElementById("pathParamsSection");
-      const tbody = document.getElementById("pathParamsTbody");
-      tbody.innerHTML = "";
-
-      if (pathMatches.length === 0) {
-        section.style.display = "none";
-        return;
-      }
-
-      section.style.display = "block";
-      pathMatches.forEach(rawParam => {
-        const paramKey = rawParam.substring(1);
-        const defaultVal = state.pathParamValues[paramKey] || ep.defaultParams[paramKey] || "";
-        state.pathParamValues[paramKey] = defaultVal;
-
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td style="font-family: var(--font-mono); color: var(--amber-primary);">:${paramKey}</td>
-          <td><input type="text" class="kv-input" value="${escapeHtml(defaultVal)}" oninput="onPathParamInput('${paramKey}', this.value)"></td>
-          <td style="color: var(--text-muted); font-size: 11px;">URL Path Variable</td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-
-    function onPathParamInput(key, val) {
-      state.pathParamValues[key] = val;
-      updateRenderedPath();
-    }
-
-    function renderQueryParams(ep) {
-      const tbody = document.getElementById("queryParamsTbody");
-      tbody.innerHTML = "";
-      state.customQueryParams = (ep.defaultQueryParams || []).map(q => ({ ...q }));
-
-      if (state.customQueryParams.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-muted); padding: 10px;">No query parameters defined for this endpoint. Click below to add.</td></tr>`;
-        document.getElementById("paramCountBadge").textContent = "0";
-        return;
-      }
-
-      document.getElementById("paramCountBadge").textContent = state.customQueryParams.length;
-
-      state.customQueryParams.forEach((q, idx) => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td style="text-align: center;">
-            <input type="checkbox" ${q.enabled ? 'checked' : ''} onchange="toggleQueryParam(${idx}, this.checked)">
-          </td>
-          <td>
-            <input type="text" class="kv-input" value="${escapeHtml(q.key)}" oninput="updateQueryParamKey(${idx}, this.value)">
-          </td>
-          <td>
-            <input type="text" class="kv-input" value="${escapeHtml(q.value)}" oninput="updateQueryParamValue(${idx}, this.value)">
-          </td>
-          <td style="color: var(--text-muted); font-size: 11px;">${escapeHtml(q.desc || '')}</td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-
-    function toggleQueryParam(idx, checked) {
-      if (state.customQueryParams[idx]) {
-        state.customQueryParams[idx].enabled = checked;
-        updateRenderedPath();
-      }
-    }
-
-    function updateQueryParamKey(idx, val) {
-      if (state.customQueryParams[idx]) {
-        state.customQueryParams[idx].key = val;
-        updateRenderedPath();
-      }
-    }
-
-    function updateQueryParamValue(idx, val) {
-      if (state.customQueryParams[idx]) {
-        state.customQueryParams[idx].value = val;
-        updateRenderedPath();
-      }
-    }
-
-    function addCustomQueryParam() {
-      state.customQueryParams.push({ key: "filter", value: "value", enabled: true, desc: "Custom param" });
-      renderQueryParams(state.currentEndpoint);
-      updateRenderedPath();
-    }
-
-    function collectEnabledQueryParams() {
-      const q = new URLSearchParams();
-      (state.customQueryParams || []).forEach(item => {
-        if (item.enabled && item.key.trim()) {
-          q.append(item.key.trim(), item.value);
-        }
-      });
-      return q;
-    }
-
-    function renderDocsTab(ep) {
-      const container = document.getElementById("endpointDocsContainer");
-      const rbacBadges = ep.rbac.map(r => `<span class="rbac-tag" style="font-size: 11px; padding: 2px 7px;">${r}</span>`).join(" ");
-
-      container.innerHTML = `
-        <h3>${escapeHtml(ep.name)}</h3>
-        <p>${escapeHtml(ep.description)}</p>
-
-        <div class="docs-card">
-          <div class="docs-card-title">Endpoint Specifications</div>
-          <table style="width: 100%; font-size: 12px; border-collapse: collapse;">
-            <tr><td style="width: 120px; color: var(--text-muted); padding: 4px 0;">Method:</td><td style="font-family: var(--font-mono); font-weight: 700; color: var(--amber-primary);">${ep.method}</td></tr>
-            <tr><td style="color: var(--text-muted); padding: 4px 0;">Full Path:</td><td style="font-family: var(--font-mono);">${ep.path}</td></tr>
-            <tr><td style="color: var(--text-muted); padding: 4px 0;">Required RBAC:</td><td>${rbacBadges}</td></tr>
-          </table>
-        </div>
-
-        <div class="docs-card">
-          <div class="docs-card-title">Security &amp; Authorization Rule</div>
-          <p style="margin: 0; font-size: 12.5px;">
-            ${getRBACExplanation(ep.rbac)}
-          </p>
-        </div>
-      `;
-    }
-
-    function getRBACExplanation(rbac) {
-      if (rbac.includes("public")) {
-        return "This is a <strong>Public Endpoint</strong>. No authentication or JWT token is required. Accessible by any consumer, edge gateway, or web client.";
-      }
-      if (rbac.includes("all-authenticated")) {
-        return "This endpoint requires an <strong>Authenticated User Session</strong>. Any valid stakeholder account (Admin, Beekeeper, Lab, Processor, Distributor, Auditor) is authorized.";
-      }
-      return `This endpoint is restricted to designated stakeholders: <strong>${rbac.join(" or ").toUpperCase()}</strong>. HoneyChain Platform Admins always retain master superuser authorization.`;
-    }
-
-    function checkRoleAuthorization(ep) {
-      // Check if current role is authorized
-      const currentRole = state.activeRole;
-      if (ep.rbac.includes("public")) return;
-
-      const isAuthorized = currentRole === "admin" ||
-        ep.rbac.includes("all-authenticated") ||
-        ep.rbac.includes(currentRole);
-
-      if (!isAuthorized) {
-        const recommendedRole = ep.rbac[0] === "all-authenticated" ? "beekeeper" : ep.rbac[0];
-        const bannerHtml = `
-          <div class="rbac-alert-banner" id="rbacAlertNotice">
-            <div class="rbac-alert-text">
-              &#9888; <strong>RBAC Notice:</strong> This endpoint requires role <strong>${ep.rbac.join("/")}</strong>. You are currently <strong>${currentRole.toUpperCase()}</strong>.
-            </div>
-            <button class="btn-switch-role" onclick="switchRole('${recommendedRole}')">
-              Switch to ${recommendedRole.toUpperCase()} &amp; Send
-            </button>
+            <textarea id="bodyEditor" class="code-area" spellcheck="false" placeholder="Enter JSON request payload…"></textarea>
           </div>
-        `;
-        const existing = document.getElementById("rbacAlertNotice");
-        if (existing) existing.remove();
-        document.getElementById("tabPaneParams").insertAdjacentHTML("afterbegin", bannerHtml);
-      } else {
-        const existing = document.getElementById("rbacAlertNotice");
-        if (existing) existing.remove();
-      }
+
+          <!-- HEADERS PANE -->
+          <div id="paneHeaders" style="display:none;">
+            <table style="width:100%;border-collapse:collapse;">
+              <thead><tr style="border-bottom:1px solid #221b11;">
+                <th style="text-align:left;padding:5px 8px;font-size:11px;color:#7a6e60;font-weight:600;text-transform:uppercase;width:38%;">Header</th>
+                <th style="text-align:left;padding:5px 8px;font-size:11px;color:#7a6e60;font-weight:600;text-transform:uppercase;width:52%;">Value</th>
+                <th style="text-align:left;padding:5px 8px;font-size:11px;color:#7a6e60;font-weight:600;text-transform:uppercase;width:10%;">Source</th>
+              </tr></thead>
+              <tbody>
+                <tr class="kv-row">
+                  <td style="padding:6px 8px;font-family:'Fira Code',monospace;color:#f59e0b;font-size:11.5px;">Content-Type</td>
+                  <td style="padding:6px 8px;"><input type="text" class="kv-input" value="application/json" readonly></td>
+                  <td style="padding:6px 8px;font-size:10.5px;color:#7a6e60;">Auto</td>
+                </tr>
+                <tr class="kv-row">
+                  <td style="padding:6px 8px;font-family:'Fira Code',monospace;color:#f59e0b;font-size:11.5px;">Authorization</td>
+                  <td style="padding:6px 8px;"><input type="text" id="authHeaderInput" class="kv-input" placeholder="Bearer <token>" readonly></td>
+                  <td style="padding:6px 8px;font-size:10.5px;color:#7a6e60;">RBAC Token</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- AUTH PANE -->
+          <div id="paneAuth" style="display:none;">
+            <div style="background:#100d08;border:1px solid #221b11;border-radius:8px;padding:14px;margin-bottom:12px;">
+              <div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:#f59e0b;margin-bottom:10px;">🔑 Active Persona Authentication</div>
+              <p style="font-size:12px;color:#c2b5a4;margin-bottom:12px;line-height:1.5;">Select a stakeholder persona in the header to simulate their session. Real JWT tokens are fetched via <code style="background:#1a140d;padding:1px 5px;border-radius:3px;font-size:11px;">/api/auth/login</code> and cached per role.</p>
+              <div style="display:grid;grid-template-columns:130px 1fr;gap:6px;font-size:12px;">
+                <div style="color:#7a6e60;">Current Role:</div><div id="authRoleVal" style="color:#f59e0b;font-weight:700;">admin</div>
+                <div style="color:#7a6e60;">Email:</div><div id="authEmailVal" style="font-family:'Fira Code',monospace;font-size:11.5px;">admin@honeychain.org</div>
+                <div style="color:#7a6e60;">Wallet:</div><div id="authWalletVal" style="font-family:'Fira Code',monospace;font-size:11.5px;word-break:break-all;">0x65af…</div>
+                <div style="color:#7a6e60;">JWT Token:</div><div id="authTokenVal" style="font-family:'Fira Code',monospace;font-size:10.5px;color:#7a6e60;word-break:break-all;">eyJhbGci…</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;">
+              <button onclick="copyToken()"        class="ghost-btn">Copy JWT Token</button>
+              <button onclick="switchRole('none')" class="ghost-btn">Clear Auth (Test 401/403)</button>
+            </div>
+          </div>
+
+          <!-- DOCS PANE -->
+          <div id="paneDocs" style="display:none;">
+            <div id="docsContent" style="font-size:13px;color:#c2b5a4;line-height:1.6;"></div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- RESPONSE SECTION -->
+      <div style="display:flex;flex-direction:column;overflow:hidden;background:#06050a;">
+
+        <!-- Response header bar -->
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 16px;background:#0f0c08;border-bottom:1px solid #221b11;flex-shrink:0;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:#7a6e60;">Response</span>
+            <span id="resStatus" style="display:none;font-family:'Fira Code',monospace;font-size:12px;font-weight:700;padding:3px 8px;border-radius:5px;"></span>
+            <span id="resTime" style="display:none;font-family:'Fira Code',monospace;font-size:11.5px;color:#7a6e60;">Time: <strong id="resTimeVal" style="color:#c2b5a4;"></strong></span>
+            <span id="resSize" style="display:none;font-family:'Fira Code',monospace;font-size:11.5px;color:#7a6e60;">Size: <strong id="resSizeVal" style="color:#c2b5a4;"></strong></span>
+          </div>
+          <button onclick="copyResponse()" class="ghost-btn" style="font-size:11px;padding:4px 10px;">📋 Copy Response</button>
+        </div>
+
+        <!-- Response body -->
+        <div style="flex:1;overflow:auto;padding:14px 16px;">
+          <div id="resEmpty" style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#7a6e60;text-align:center;padding:24px;">
+            <div style="font-size:32px;margin-bottom:12px;opacity:0.4;">⬢</div>
+            <div style="font-size:14px;font-weight:600;color:#c2b5a4;margin-bottom:6px;">Ready to Send</div>
+            <div style="font-size:12.5px;max-width:360px;line-height:1.5;">Pick an endpoint, configure your request, then click <strong style="color:#f5f0e8;">Send</strong>.</div>
+          </div>
+          <pre id="resBody" style="display:none;"></pre>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<div id="toast"></div>
+
+<script>
+/* ================================================================
+   ENDPOINTS REGISTRY
+   ================================================================ */
+const ENDPOINTS = [
+  // System & Network
+  { id:"sys-health",    category:"sys", categoryName:"System & Network",  name:"Health & Network Check",          method:"GET",   path:"/health",                                rbac:["public"],                                         description:"Returns production operational health, MongoDB connection state, and Ethereum Sepolia testnet parameters.", defaultParams:{}, defaultQueryParams:[], defaultBody:null },
+  { id:"sys-wallets",   category:"sys", categoryName:"System & Network",  name:"Stakeholder Sepolia Wallets",     method:"GET",   path:"/api/auth/wallets",                      rbac:["public"],                                         description:"Returns public Ethereum Sepolia wallet addresses configured for all 5 HoneyChain stakeholder roles.", defaultParams:{}, defaultQueryParams:[], defaultBody:null },
+  { id:"sys-verify-qr", category:"sys", categoryName:"System & Network",  name:"Consumer QR Verification (JSON)",method:"GET",   path:"/api/verify/:batchId",                   rbac:["public"],                                         description:"Public consumer verification endpoint returning complete cryptographic and laboratory provenance.", defaultParams:{batchId:"HC-DEMO-SUNDAR-2025-01"}, defaultQueryParams:[], defaultBody:null },
+  // Auth
+  { id:"auth-login",        category:"auth", categoryName:"Authentication & RBAC", name:"Stakeholder Login",          method:"POST",  path:"/api/auth/login",    rbac:["public"],       description:"Authenticates stakeholder credentials and issues a signed JWT token with assigned role & organization.", defaultParams:{}, defaultQueryParams:[], defaultBody:{email:"beekeeper@honeychain.org",password:"Password123!"} },
+  { id:"auth-me",           category:"auth", categoryName:"Authentication & RBAC", name:"Current Session Profile",    method:"GET",   path:"/api/auth/me",       rbac:["all-authenticated"], description:"Returns authenticated user account profile, assigned role permissions, and active blockchain wallet address.", defaultParams:{}, defaultQueryParams:[], defaultBody:null },
+  { id:"auth-users-get",    category:"auth", categoryName:"Authentication & RBAC", name:"List Registered Users",      method:"GET",   path:"/api/auth/users",    rbac:["admin"],        description:"Admin only: lists all registered platform users and their roles.", defaultParams:{}, defaultQueryParams:[], defaultBody:null },
+  { id:"auth-users-create", category:"auth", categoryName:"Authentication & RBAC", name:"Provision User Account",     method:"POST",  path:"/api/auth/users",    rbac:["admin"],        description:"Admin only: provisions a new HoneyChain user with designated role.", defaultParams:{}, defaultQueryParams:[], defaultBody:{name:"Dr. Kabir Roy",email:"kabir.roy@honeychain.org",password:"Password123!",role:"lab"} },
+  { id:"auth-logout",       category:"auth", categoryName:"Authentication & RBAC", name:"Logout Session",             method:"POST",  path:"/api/auth/logout",   rbac:["public"],       description:"Clears session authentication cookies.", defaultParams:{}, defaultQueryParams:[], defaultBody:{} },
+  // Batches
+  { id:"batch-list",            category:"batches", categoryName:"Honey Batches (Sepolia)", name:"List Harvest Batches",              method:"GET",  path:"/api/batches",                                       rbac:["all-authenticated"],                        description:"Lists batches with tenant isolation and status filters (Registered, Certified, InTransit, Delivered, Recalled).", defaultParams:{}, defaultQueryParams:[{key:"page",value:"1",enabled:true,desc:"Page"},{key:"limit",value:"20",enabled:true,desc:"Items per page"},{key:"status",value:"Registered",enabled:false,desc:"Status filter"}], defaultBody:null },
+  { id:"batch-get",             category:"batches", categoryName:"Honey Batches (Sepolia)", name:"Get Batch by ID",                   method:"GET",  path:"/api/batches/:batchId",                              rbac:["all-authenticated"],                        description:"Retrieves complete batch provenance, custody history, laboratory assay, and Sepolia transaction hashes.", defaultParams:{batchId:"HC-DEMO-SUNDAR-2025-01"}, defaultQueryParams:[], defaultBody:null },
+  { id:"batch-register",        category:"batches", categoryName:"Honey Batches (Sepolia)", name:"Register Batch on Sepolia",         method:"POST", path:"/api/batches",                                       rbac:["beekeeper"],                                description:"Beekeeper only: registers a new harvest batch on Ethereum Sepolia smart contract.", defaultParams:{}, defaultQueryParams:[], defaultBody:{batchId:"HC-BATCH-"+Date.now(),quantityGrams:50000,floralOrigin:"Sundarbans Wild Mangrove (Khalisha)",sourceHives:["HIVE-001","HIVE-002"],apiaryLocation:{latitude:21.9497,longitude:89.1833,region:"Sundarbans Biosphere Reserve, West Bengal"},extraMetadata:{harvestMethod:"Cold-filtered traditional artisanal extraction",organicCertified:true}} },
+  { id:"batch-certify",         category:"batches", categoryName:"Honey Batches (Sepolia)", name:"Certify Quality Assay",             method:"POST", path:"/api/batches/:batchId/quality",                      rbac:["lab"],                                      description:"Laboratory only: records quality grade and moisture on-chain.", defaultParams:{batchId:"HC-DEMO-SUNDAR-2025-01"}, defaultQueryParams:[], defaultBody:{grade:"GradeA",moisturePercentage:17.2,labReportData:{fructoseGlucoseRatio:1.25,hmfMgKg:12.4,diastaseNumber:18.0,antibioticResidues:"ND (Not Detected)"}} },
+  { id:"batch-custody-propose", category:"batches", categoryName:"Honey Batches (Sepolia)", name:"Propose Custody Handshake (Step 1)",method:"POST", path:"/api/batches/:batchId/custody/propose",              rbac:["beekeeper","processor","distributor","admin"],description:"Two-step handshake step 1: Current custodian proposes custody transfer.", defaultParams:{batchId:"HC-DEMO-SUNDAR-2025-01"}, defaultQueryParams:[], defaultBody:{to:"0x70997970C51812dc3A010C7d01b50e0d17dc79C8",location:"Kolkata Cold-Chain Transit Hub",role:"processor"} },
+  { id:"batch-custody-accept",  category:"batches", categoryName:"Honey Batches (Sepolia)", name:"Accept Custody Handshake (Step 2)", method:"POST", path:"/api/batches/:batchId/custody/accept",               rbac:["processor","distributor","admin"],           description:"Two-step handshake step 2: Designated recipient signs and accepts custody on Ethereum Sepolia.", defaultParams:{batchId:"HC-DEMO-SUNDAR-2025-01"}, defaultQueryParams:[], defaultBody:{role:"processor"} },
+  { id:"batch-deliver",         category:"batches", categoryName:"Honey Batches (Sepolia)", name:"Deliver Batch to Retail",           method:"POST", path:"/api/batches/:batchId/deliver",                      rbac:["distributor","processor","admin"],           description:"Marks batch as Delivered to retail point-of-sale destination on Ethereum Sepolia.", defaultParams:{batchId:"HC-DEMO-SUNDAR-2025-01"}, defaultQueryParams:[], defaultBody:{location:"Organic Cooperative Flagship Store, Kolkata",role:"distributor"} },
+  { id:"batch-review-req",      category:"batches", categoryName:"Honey Batches (Sepolia)", name:"Request Auditor Review",            method:"POST", path:"/api/batches/:batchId/review-request",               rbac:["beekeeper","lab","processor","distributor","auditor","admin"], description:"Submits a formal auditor review request for batch investigation.", defaultParams:{batchId:"HC-DEMO-SUNDAR-2025-01"}, defaultQueryParams:[], defaultBody:{reason:"Moisture assay variance requires compliance auditor verification.",role:"processor"} },
+  { id:"batch-review-clear",    category:"batches", categoryName:"Honey Batches (Sepolia)", name:"Clear Auditor Review",              method:"POST", path:"/api/batches/:batchId/review-request/:requestId/clear",rbac:["auditor","admin"],                          description:"Auditor/Admin only: clears active review request.", defaultParams:{batchId:"HC-DEMO-SUNDAR-2025-01",requestId:"1"}, defaultQueryParams:[], defaultBody:{note:"Auditor reviewed calibration records; certified within compliance limits."} },
+  { id:"batch-reject",          category:"batches", categoryName:"Honey Batches (Sepolia)", name:"Reject & Recall Batch",             method:"POST", path:"/api/batches/:batchId/reject",                       rbac:["auditor","admin"],                          description:"Auditor/Admin only: formally rejects batch and permanently flags as Recalled on-chain.", defaultParams:{batchId:"HC-DEMO-SUNDAR-2025-01"}, defaultQueryParams:[], defaultBody:{requestId:1,reason:"Batch failed FSSAI purity standards due to moisture excess."} },
+  { id:"batch-qr",              category:"batches", categoryName:"Honey Batches (Sepolia)", name:"Generate Packaging QR Code",        method:"GET",  path:"/api/batches/:batchId/qr",                           rbac:["processor","beekeeper","admin","auditor","distributor"], description:"Generates high-resolution PNG Data URL and SVG QR codes for retail jar packaging.", defaultParams:{batchId:"HC-DEMO-SUNDAR-2025-01"}, defaultQueryParams:[], defaultBody:null },
+  // Organizations
+  { id:"orgs-apply",            category:"orgs", categoryName:"Organizations & Governance", name:"Submit Onboarding Application", method:"POST", path:"/api/organizations/apply",        rbac:["public"],          description:"Public: submits an enterprise registration application to join HoneyChain.", defaultParams:{}, defaultQueryParams:[], defaultBody:{organizationName:"Darjeeling Mountain Apiaries",role:"beekeeper",registrationNumber:"COOP-WB-2025-441",taxId:"19AABCK9988Z1Z5",contactEmail:"contact@darjeeling-apiary.org",contactPhone:"+919830112233",address:{street:"24 Tea Garden Road",city:"Darjeeling",state:"West Bengal",postalCode:"734101",country:"India"},adminUser:{name:"Bikram Thapa",email:"bikram@darjeeling-apiary.org"}} },
+  { id:"orgs-applications-list",category:"orgs", categoryName:"Organizations & Governance", name:"List Applications",             method:"GET",  path:"/api/organizations/applications", rbac:["admin"],           description:"Admin only: lists pending and reviewed organization onboarding applications.", defaultParams:{}, defaultQueryParams:[{key:"status",value:"PENDING",enabled:true,desc:"Status filter"},{key:"page",value:"1",enabled:true,desc:"Page"},{key:"limit",value:"20",enabled:true,desc:"Limit"}], defaultBody:null },
+  { id:"orgs-my",               category:"orgs", categoryName:"Organizations & Governance", name:"My Organization Profile",       method:"GET",  path:"/api/organizations/my",           rbac:["all-authenticated"],description:"Returns the organization profile and blockchain wallet associated with the caller.", defaultParams:{}, defaultQueryParams:[], defaultBody:null },
+  { id:"orgs-list-all",         category:"orgs", categoryName:"Organizations & Governance", name:"List All Organizations",        method:"GET",  path:"/api/organizations",              rbac:["admin"],           description:"Admin only: lists all verified stakeholder organizations.", defaultParams:{}, defaultQueryParams:[], defaultBody:null },
+  // Apiaries & Hives
+  { id:"apiaries-list",   category:"sanctuary", categoryName:"Sanctuary Apiaries & Hives", name:"List Apiaries",          method:"GET",  path:"/api/apiaries",        rbac:["all-authenticated"],     description:"Lists apiary sanctuaries with geographic coordinates and populated hives.", defaultParams:{}, defaultQueryParams:[{key:"page",value:"1",enabled:true,desc:"Page"},{key:"limit",value:"20",enabled:true,desc:"Limit"}], defaultBody:null },
+  { id:"apiaries-create", category:"sanctuary", categoryName:"Sanctuary Apiaries & Hives", name:"Create Apiary Sanctuary",method:"POST", path:"/api/apiaries",        rbac:["beekeeper","admin"],     description:"Beekeeper/Admin: provisions a new geo-located bee sanctuary.", defaultParams:{}, defaultQueryParams:[], defaultBody:{name:"Sundarbans Mangrove Delta Sanctuary",location:{latitude:21.9497,longitude:89.1833,region:"Sundarbans Biosphere Reserve",address:"Gosaba Island, South 24 Parganas, West Bengal"},floraType:["Khalisha (Aegiceras)","Goran","Bani"],capacity:25,notes:"Protected UNESCO bio-reserve buffer zone."} },
+  { id:"hives-list",      category:"sanctuary", categoryName:"Sanctuary Apiaries & Hives", name:"List Hives",             method:"GET",  path:"/api/hives",           rbac:["all-authenticated"],     description:"Lists hives with health scores, species, and edge IoT gateway status.", defaultParams:{}, defaultQueryParams:[{key:"status",value:"active",enabled:true,desc:"Hive status"}], defaultBody:null },
+  { id:"hives-get",       category:"sanctuary", categoryName:"Sanctuary Apiaries & Hives", name:"Get Hive Details",       method:"GET",  path:"/api/hives/:hiveId",   rbac:["all-authenticated"],     description:"Retrieves complete hive profile, queen genetics, and current health summary.", defaultParams:{hiveId:"HIVE-001"}, defaultQueryParams:[], defaultBody:null },
+  { id:"harvests-list",   category:"sanctuary", categoryName:"Sanctuary Apiaries & Hives", name:"List Harvests",          method:"GET",  path:"/api/harvests",        rbac:["all-authenticated"],     description:"Lists raw honey harvests recorded across colonies.", defaultParams:{}, defaultQueryParams:[], defaultBody:null },
+  { id:"harvests-create", category:"sanctuary", categoryName:"Sanctuary Apiaries & Hives", name:"Record New Harvest",     method:"POST", path:"/api/harvests",        rbac:["beekeeper","admin"],     description:"Beekeeper/Admin: logs honey extraction quantity, floral nectar origin, and date.", defaultParams:{}, defaultQueryParams:[], defaultBody:{hiveId:"HIVE-001",quantityGrams:16500,floralOrigin:"Sundarbans Wild Mangrove Blossom",notes:"Excellent amber clarity with 17.1% moisture."} },
+  // IoT
+  { id:"iot-telemetry-ingest",   category:"iot", categoryName:"IoT Telemetry & Gateway", name:"Ingest Sensor Telemetry",          method:"POST", path:"/api/iot/telemetry",                        rbac:["public"],            description:"Edge hardware ingestion endpoint with biological validation (32-37C) and downsampled persistence.", defaultParams:{}, defaultQueryParams:[], defaultBody:{deviceId:"ESP32-HIVE-001",hiveId:"HIVE-001",timestamp:new Date().toISOString(),temperature:34.6,humidity:58.2,weightKg:32.85,soundFrequencyHz:212,acousticsDb:61.5,batteryLevelPct:96,ambientTemperature:25.8,ambientHumidity:62.0,flow:25,beeInCount:38,beeOutCount:31} },
+  { id:"iot-telemetry-recent",   category:"iot", categoryName:"IoT Telemetry & Gateway", name:"Recent Telemetry Buffer",          method:"GET",  path:"/api/iot/telemetry/:hiveId/recent",          rbac:["all-authenticated"], description:"Retrieves latest 10 sensor telemetry readings from Redis rolling buffer.", defaultParams:{hiveId:"HIVE-001"}, defaultQueryParams:[], defaultBody:null },
+  { id:"iot-telemetry-history",  category:"iot", categoryName:"IoT Telemetry & Gateway", name:"Time-Series Telemetry History",    method:"GET",  path:"/api/iot/telemetry/:hiveId",                rbac:["public"],            description:"Chronological sensor data for charts with resolution filters (raw | hourly).", defaultParams:{hiveId:"HIVE-001"}, defaultQueryParams:[{key:"limit",value:"50",enabled:true,desc:"Max readings"},{key:"resolution",value:"raw",enabled:true,desc:"raw or hourly"}], defaultBody:null },
+  { id:"iot-device-status",      category:"iot", categoryName:"IoT Telemetry & Gateway", name:"Edge Device Hardware Status",      method:"GET",  path:"/api/iot/devices/:deviceId/status",          rbac:["public"],            description:"Diagnostic connectivity check for ESP32 edge microcontrollers.", defaultParams:{deviceId:"ESP32-HIVE-001"}, defaultQueryParams:[], defaultBody:null },
+  { id:"iot-simulate",           category:"iot", categoryName:"IoT Telemetry & Gateway", name:"Trigger On-Demand Sensor Cycle",   method:"POST", path:"/api/iot/simulate",                         rbac:["public"],            description:"Simulates an on-demand real-time telemetry cycle for active colonies.", defaultParams:{}, defaultQueryParams:[], defaultBody:{} },
+  // ML
+  { id:"ml-health",         category:"ml", categoryName:"AI & ML Intelligence", name:"Colony Health ML Status",            method:"GET",  path:"/api/ml/health",                  rbac:["public"], description:"Health probe for the external Python ML inference service.", defaultParams:{}, defaultQueryParams:[], defaultBody:null },
+  { id:"ml-predict",        category:"ml", categoryName:"AI & ML Intelligence", name:"Trigger Colony Health Inference",    method:"POST", path:"/api/ml/predict/:hiveId",         rbac:["public"], description:"Executes ML colony anomaly detection with Gemini LLM biological diagnostics.", defaultParams:{hiveId:"HIVE-001"}, defaultQueryParams:[{key:"forceAi",value:"true",enabled:true,desc:"Force AI reasoning"}], defaultBody:{} },
+  { id:"ml-latest",         category:"ml", categoryName:"AI & ML Intelligence", name:"Latest Colony Health Prediction",   method:"GET",  path:"/api/ml/latest/:hiveId",          rbac:["public"], description:"Retrieves the most recent AI diagnostic prediction for a hive.", defaultParams:{hiveId:"HIVE-001"}, defaultQueryParams:[], defaultBody:null },
+  { id:"ml-yield-health",   category:"ml", categoryName:"AI & ML Intelligence", name:"Yield & Harvest ML Status",         method:"GET",  path:"/api/ml/yield/health",            rbac:["public"], description:"Checks connectivity of the Yield Production & Harvest Window prediction service.", defaultParams:{}, defaultQueryParams:[], defaultBody:null },
+  { id:"ml-yield-predict",  category:"ml", categoryName:"AI & ML Intelligence", name:"Predict Honey Yield & Harvest Window",method:"POST",path:"/api/ml/yield/predict/:hiveId", rbac:["public"], description:"Evaluates nectar flow curve, weight gain rates, and forecasts optimal harvest window.", defaultParams:{hiveId:"HIVE-001"}, defaultQueryParams:[{key:"forceAi",value:"true",enabled:true,desc:"Include Gemini analysis"}], defaultBody:{} },
+  { id:"ml-yield-latest",   category:"ml", categoryName:"AI & ML Intelligence", name:"Latest Yield Prediction",           method:"GET",  path:"/api/ml/yield/latest/:hiveId",    rbac:["public"], description:"Returns the latest estimated yield (kg) and harvest window forecast.", defaultParams:{hiveId:"HIVE-001"}, defaultQueryParams:[], defaultBody:null },
+  // Alerts
+  { id:"alerts-list",    category:"alerts", categoryName:"Alerts & Incidents", name:"List Alerts",   method:"GET",   path:"/api/alerts",              rbac:["all-authenticated"], description:"Lists active or resolved biological alerts (hypothermia, swarming, low battery).", defaultParams:{}, defaultQueryParams:[{key:"isResolved",value:"false",enabled:true,desc:"Active alerts"}], defaultBody:null },
+  { id:"alerts-resolve", category:"alerts", categoryName:"Alerts & Incidents", name:"Resolve Alert", method:"PATCH", path:"/api/alerts/:id/resolve",  rbac:["all-authenticated"], description:"Marks an alert as investigated and resolved by authorized staff.", defaultParams:{id:"65d8a9b1c2e3f4a5b6c7d8e9"}, defaultQueryParams:[], defaultBody:{} },
+  // Analytics
+  { id:"analytics-dashboard", category:"analytics", categoryName:"Analytics & Reports", name:"Operational Dashboard Analytics", method:"GET", path:"/api/analytics/dashboard", rbac:["all-authenticated"], description:"Role-scoped aggregations covering active hives, batch counts, weight production, and IoT telemetry.", defaultParams:{}, defaultQueryParams:[], defaultBody:null },
+  { id:"analytics-clusters",  category:"analytics", categoryName:"Analytics & Reports", name:"Geographic Sanctuary Clusters",  method:"GET", path:"/api/analytics/clusters",  rbac:["all-authenticated"], description:"Aggregates sanctuaries by region into beekeeping clusters for regional supply monitoring.", defaultParams:{}, defaultQueryParams:[], defaultBody:null },
+];
+
+/* ================================================================
+   DEMO USERS
+   ================================================================ */
+const DEMO_USERS = {
+  admin:       { role:"admin",       tag:"👑 ADMIN",       name:"System Administrator", email:"admin@honeychain.org",       wallet:"0x65afF3B44441FfF68171a9a0AA28063BC83C208d" },
+  beekeeper:   { role:"beekeeper",   tag:"🐝 BEEKEEPER",   name:"Rajesh Kumar",          email:"beekeeper@honeychain.org",   wallet:"0x70997970C51812dc3A010C7d01b50e0d17dc79C8" },
+  lab:         { role:"lab",         tag:"🧪 LAB",          name:"Dr. Ananya Sen",        email:"lab@honeychain.org",         wallet:"0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC" },
+  processor:   { role:"processor",   tag:"🏭 PROCESSOR",   name:"Vikram Patel",          email:"processor@honeychain.org",   wallet:"0x90F79bf6EB2c4f870365E785982E1f101E93b906" },
+  distributor: { role:"distributor", tag:"🚚 DISTRIBUTOR", name:"Gurpreet Singh",        email:"distributor@honeychain.org", wallet:"0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65" },
+  auditor:     { role:"auditor",     tag:"🔍 AUDITOR",     name:"Priya Sharma",          email:"auditor@honeychain.org",     wallet:"0x9965507D1a55bcC2695C58ba16FB37d819B0A4dc" },
+  none:        { role:"none",        tag:"🔓 PUBLIC",       name:"Unauthenticated Guest", email:"guest@honeychain.org",       wallet:"No Wallet Assigned" },
+};
+
+/* ================================================================
+   STATE
+   ================================================================ */
+const S = {
+  role: "admin", tokens: {}, ep: null,
+  queryParams: [], pathVars: {}, category: "all", query: "",
+  baseUrl: window.location.origin,
+};
+
+/* ================================================================
+   INIT
+   ================================================================ */
+window.addEventListener("DOMContentLoaded", async () => {
+  document.getElementById("urlOrigin").textContent = S.baseUrl;
+  document.getElementById("totalCount").textContent = ENDPOINTS.length;
+  checkHealth();
+  renderEndpoints();
+  await loginRole("admin", false);
+  selectEndpoint(ENDPOINTS[0]);
+});
+
+/* ================================================================
+   HEALTH
+   ================================================================ */
+async function checkHealth() {
+  const badge = document.getElementById("healthBadge");
+  const txt   = document.getElementById("healthTxt");
+  try {
+    const r = await fetch(S.baseUrl + "/health");
+    const d = await r.json();
+    if (d.status === "ok") {
+      badge.style.cssText = "display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:6px;font-size:11.5px;font-weight:600;background:rgba(16,185,129,0.1);color:#10b981;border:1px solid rgba(16,185,129,0.25);";
+      txt.textContent = "Online \xB7 " + (d.blockchain?.network || "Sepolia") + " (11155111)";
+    } else {
+      badge.style.cssText = "display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:6px;font-size:11.5px;font-weight:600;background:rgba(249,115,22,0.1);color:#fb923c;border:1px solid rgba(249,115,22,0.25);";
+      txt.textContent = "Degraded";
     }
+  } catch {
+    badge.style.cssText = "display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:6px;font-size:11.5px;font-weight:600;background:rgba(239,68,68,0.1);color:#f87171;border:1px solid rgba(239,68,68,0.25);";
+    txt.textContent = "Offline / Error";
+  }
+}
 
-    function updateHeadersView() {
-      const token = state.tokens[state.activeRole];
-      document.getElementById("headerAuthInput").value = token ? `Bearer ${token}` : "None";
-    }
+/* ================================================================
+   RBAC ROLE MANAGEMENT
+   ================================================================ */
+async function switchRole(role) {
+  document.querySelectorAll(".role-btn").forEach(b => b.classList.remove("role-active"));
+  const btn = document.querySelector(`.role-btn[data-role="${role}"]`);
+  if (btn) btn.classList.add("role-active");
+  S.role = role;
+  if (role === "none") {
+    updateUserPill(DEMO_USERS.none, "");
+    updateAuthHeaderInput();
+    toast("Switched to Unauthenticated mode");
+    return;
+  }
+  await loginRole(role, true);
+}
 
-    /* =========================================================================
-       Request Execution Engine (REAL Calls!)
-       ========================================================================= */
-    async function executeCurrentRequest() {
-      const sendBtn = document.getElementById("sendBtn");
-      const pathInput = document.getElementById("reqPathInput");
-      const method = document.getElementById("reqMethodSelect").value;
-      const path = pathInput.value.trim();
+async function loginRole(role, notify) {
+  const u = DEMO_USERS[role]; if (!u) return;
+  const cached = localStorage.getItem("hc_token_" + role);
+  if (cached) {
+    S.tokens[role] = cached; updateUserPill(u, cached); updateAuthHeaderInput();
+    if (notify) toast("Authenticated as " + u.name + " (" + u.tag + ")");
+    return;
+  }
+  try {
+    const r = await fetch(S.baseUrl + "/api/auth/login", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({email:u.email,password:"Password123!"}) });
+    const d = await r.json();
+    if (d.success && d.token) {
+      S.tokens[role] = d.token; localStorage.setItem("hc_token_" + role, d.token);
+      updateUserPill(u, d.token); updateAuthHeaderInput();
+      if (notify) toast("Logged in as " + u.name + " (" + u.tag + ")");
+    } else { updateUserPill(u, ""); if (notify) toast("Login: " + (d.message || "Check credentials")); }
+  } catch { updateUserPill(u, ""); }
+}
 
-      const url = `${state.baseUrl}${path.startsWith('/') ? '' : '/'}${path}`;
+function updateUserPill(u, token) {
+  document.getElementById("userTag").textContent  = u.tag;
+  document.getElementById("userName").textContent = u.name;
+  const w = u.wallet.length > 14 ? u.wallet.substring(0,6) + "\u2026" + u.wallet.substring(u.wallet.length-4) : u.wallet;
+  const wEl = document.getElementById("userWallet"); wEl.textContent = w; wEl.title = u.wallet;
+  document.getElementById("authRoleVal").textContent   = u.role;
+  document.getElementById("authEmailVal").textContent  = u.email;
+  document.getElementById("authWalletVal").textContent = u.wallet;
+  document.getElementById("authTokenVal").textContent  = token ? token.substring(0,40) + "\u2026" : "None (Unauthenticated)";
+}
+function updateAuthHeaderInput() {
+  const tok = S.tokens[S.role];
+  document.getElementById("authHeaderInput").value = tok ? "Bearer " + tok : "None";
+}
 
-      // Build Headers
-      const headers = {
-        "Accept": "application/json, text/html, */*"
-      };
+/* ================================================================
+   ENDPOINT LIST
+   ================================================================ */
+function renderEndpoints() {
+  const container = document.getElementById("endpointList"); container.innerHTML = "";
+  const q = S.query.toLowerCase();
+  const filtered = ENDPOINTS.filter(ep => {
+    const mc = S.category === "all" || ep.category === S.category;
+    const mq = !q || ep.name.toLowerCase().includes(q) || ep.path.toLowerCase().includes(q) || ep.method.toLowerCase().includes(q);
+    return mc && mq;
+  });
+  const groups = {};
+  filtered.forEach(ep => { (groups[ep.categoryName] = groups[ep.categoryName] || []).push(ep); });
+  for (const [cat, list] of Object.entries(groups)) {
+    const label = document.createElement("div"); label.className = "cat-label";
+    label.innerHTML = esc(cat) + ' <span style="background:#1a140d;color:#7a6e60;font-size:9.5px;padding:1px 6px;border-radius:99px;">' + list.length + '</span>';
+    container.appendChild(label);
+    list.forEach(ep => {
+      const item = document.createElement("div");
+      item.className = "ep-item" + (S.ep?.id === ep.id ? " ep-active" : "");
+      item.style.cssText = "display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:7px;cursor:pointer;margin-bottom:2px;border:1px solid transparent;";
+      item.onclick = () => selectEndpoint(ep);
+      const pub = ep.rbac.includes("public");
+      const rbacBadge = pub
+        ? '<span style="font-size:9.5px;padding:1px 5px;border-radius:3px;background:#1a140d;color:#7a6e60;border:1px solid #221b11;">Public</span>'
+        : '<span style="font-size:9.5px;padding:1px 5px;border-radius:3px;background:rgba(245,158,11,0.08);color:#f59e0b;border:1px solid rgba(245,158,11,0.2);">\uD83D\uDD12 ' + ep.rbac.join(", ") + '</span>';
+      item.innerHTML = `
+        <span style="font-family:'Fira Code',monospace;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;min-width:48px;text-align:center;flex-shrink:0;" class="m-${ep.method}">${ep.method}</span>
+        <div style="flex:1;min-width:0;">
+          <div style="font-family:'Fira Code',monospace;font-size:11.5px;color:#f5f0e8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(ep.path)}</div>
+          <div style="display:flex;align-items:center;gap:5px;margin-top:2px;">
+            <span style="font-size:10.5px;color:#7a6e60;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:160px;">${esc(ep.name)}</span>
+            ${rbacBadge}
+          </div>
+        </div>`;
+      container.appendChild(item);
+    });
+  }
+}
+function filterEndpoints() { S.query = document.getElementById("searchInput").value; renderEndpoints(); }
+function filterByCategory(cat) {
+  S.category = cat;
+  document.querySelectorAll(".filter-btn").forEach(b => {
+    const a = b.getAttribute("data-cat") === cat;
+    b.style.background = a ? "rgba(245,158,11,0.1)" : "#141008";
+    b.style.color      = a ? "#f59e0b" : "#7a6e60";
+    b.style.borderColor= a ? "#f59e0b" : "#221b11";
+    b.style.fontWeight = a ? "700" : "400";
+  });
+  renderEndpoints();
+}
 
-      const token = state.tokens[state.activeRole];
-      if (token && state.activeRole !== "none") {
-        headers["Authorization"] = `Bearer ${token}`;
-      }
+/* ================================================================
+   ENDPOINT SELECTION
+   ================================================================ */
+function selectEndpoint(ep) {
+  S.ep = ep; renderEndpoints();
+  document.getElementById("methodSel").value = ep.method; onMethodChange();
+  S.pathVars = { ...ep.defaultParams }; updatePath(); renderPathParams(ep);
+  S.queryParams = (ep.defaultQueryParams || []).map(q => ({...q})); renderQueryParams(ep);
+  const be = document.getElementById("bodyEditor");
+  be.value = (ep.defaultBody && ["POST","PATCH","PUT"].includes(ep.method)) ? JSON.stringify(ep.defaultBody, null, 2) : "";
+  renderDocs(ep); updateAuthHeaderInput(); checkRbac(ep);
+}
+function onMethodChange() {
+  const sel = document.getElementById("methodSel");
+  const colors = { GET:"#10b981", POST:"#f59e0b", PATCH:"#60a5fa", DELETE:"#f87171", PUT:"#a78bfa" };
+  sel.style.color = colors[sel.value] || "#f5f0e8";
+}
 
-      const options = {
-        method,
-        headers
-      };
+/* ================================================================
+   PATH & QUERY PARAMS
+   ================================================================ */
+function updatePath() {
+  if (!S.ep) return;
+  let p = S.ep.path;
+  for (const [k,v] of Object.entries(S.pathVars)) p = p.replace(":" + k, encodeURIComponent(v || ":" + k));
+  const q = collectQP(); if (q.toString()) p += (p.includes("?") ? "&" : "?") + q.toString();
+  document.getElementById("pathInput").value = p;
+}
+function renderPathParams(ep) {
+  const matches = ep.path.match(/:[a-zA-Z0-9_]+/g) || [];
+  const sec = document.getElementById("pathParamSec"); const tbody = document.getElementById("pathParamBody"); tbody.innerHTML = "";
+  if (!matches.length) { sec.style.display = "none"; return; }
+  sec.style.display = "block";
+  matches.forEach(raw => {
+    const key = raw.substring(1), val = S.pathVars[key] || ep.defaultParams[key] || "";
+    S.pathVars[key] = val;
+    const tr = document.createElement("tr"); tr.className = "kv-row";
+    tr.innerHTML = `<td style="padding:6px 8px;font-family:'Fira Code',monospace;color:#f59e0b;font-size:11.5px;">:${key}</td>
+      <td style="padding:6px 8px;"><input type="text" class="kv-input" value="${esc(val)}" oninput="onPathVar('${key}',this.value)"></td>
+      <td style="padding:6px 8px;font-size:10.5px;color:#7a6e60;">Path Var</td>`;
+    tbody.appendChild(tr);
+  });
+}
+function onPathVar(key, val) { S.pathVars[key] = val; updatePath(); }
+function renderQueryParams(ep) {
+  const tbody = document.getElementById("queryParamBody"); tbody.innerHTML = "";
+  if (!S.queryParams.length) {
+    tbody.innerHTML = '<tr><td colspan="4" style="padding:10px 8px;color:#7a6e60;font-size:12px;text-align:center;">No query params. Add one below.</td></tr>';
+    document.getElementById("paramBadge").textContent = "0"; return;
+  }
+  document.getElementById("paramBadge").textContent = S.queryParams.length;
+  S.queryParams.forEach((q, i) => {
+    const tr = document.createElement("tr"); tr.className = "kv-row";
+    tr.innerHTML = `<td style="padding:6px 8px;text-align:center;"><input type="checkbox" ${q.enabled?"checked":""} onchange="toggleQP(${i},this.checked)"></td>
+      <td style="padding:6px 8px;"><input type="text" class="kv-input" value="${esc(q.key)}" oninput="updateQPKey(${i},this.value)"></td>
+      <td style="padding:6px 8px;"><input type="text" class="kv-input" value="${esc(q.value)}" oninput="updateQPVal(${i},this.value)"></td>
+      <td style="padding:6px 8px;font-size:10.5px;color:#7a6e60;">${esc(q.desc||"")}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+function toggleQP(i,v){ S.queryParams[i].enabled=v; updatePath(); }
+function updateQPKey(i,v){ S.queryParams[i].key=v; updatePath(); }
+function updateQPVal(i,v){ S.queryParams[i].value=v; updatePath(); }
+function addQueryParam(){ S.queryParams.push({key:"key",value:"value",enabled:true,desc:"Custom"}); renderQueryParams(S.ep); updatePath(); }
+function collectQP(){ const p=new URLSearchParams(); (S.queryParams||[]).forEach(q=>{if(q.enabled&&q.key.trim())p.append(q.key.trim(),q.value);}); return p; }
 
-      // If POST / PATCH, attach body
-      if (method === "POST" || method === "PATCH") {
-        const bodyContent = document.getElementById("reqBodyEditor").value.trim();
-        if (bodyContent) {
-          try {
-            JSON.parse(bodyContent); // validate JSON syntax
-            headers["Content-Type"] = "application/json";
-            options.body = bodyContent;
-          } catch (jsonErr) {
-            showToast("Invalid JSON in Request Body. Please fix syntax before sending.");
-            switchReqTab("body");
-            return;
-          }
-        }
-      }
+/* ================================================================
+   DOCS
+   ================================================================ */
+function renderDocs(ep) {
+  const badges = ep.rbac.map(r => `<span style="font-size:10.5px;padding:2px 7px;border-radius:3px;background:rgba(245,158,11,0.08);color:#f59e0b;border:1px solid rgba(245,158,11,0.2);margin-right:4px;">${r}</span>`).join("");
+  document.getElementById("docsContent").innerHTML = `
+    <h3 style="font-size:15px;font-weight:700;color:#f5f0e8;margin-bottom:8px;">${esc(ep.name)}</h3>
+    <p style="margin-bottom:14px;">${esc(ep.description)}</p>
+    <div style="background:#100d08;border:1px solid #221b11;border-radius:7px;padding:12px;margin-bottom:10px;">
+      <div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:#f59e0b;margin-bottom:8px;">Endpoint Spec</div>
+      <table style="font-size:12px;border-collapse:collapse;width:100%;">
+        <tr><td style="color:#7a6e60;padding:3px 0;width:130px;">Method:</td><td style="font-family:'Fira Code',monospace;font-weight:700;color:#f59e0b;">${ep.method}</td></tr>
+        <tr><td style="color:#7a6e60;padding:3px 0;">Full Path:</td><td style="font-family:'Fira Code',monospace;">${ep.path}</td></tr>
+        <tr><td style="color:#7a6e60;padding:3px 0;">Category:</td><td>${ep.categoryName}</td></tr>
+        <tr><td style="color:#7a6e60;padding:3px 0;">Required RBAC:</td><td>${badges}</td></tr>
+      </table>
+    </div>
+    <div style="background:#100d08;border:1px solid #221b11;border-radius:7px;padding:12px;">
+      <div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:#f59e0b;margin-bottom:6px;">Authorization Rule</div>
+      <p style="font-size:12.5px;">${getRbacExp(ep.rbac)}</p>
+    </div>`;
+}
+function getRbacExp(rbac) {
+  if (rbac.includes("public")) return "This is a <strong style='color:#f5f0e8;'>Public Endpoint</strong>. No authentication required.";
+  if (rbac.includes("all-authenticated")) return "Requires an <strong style='color:#f5f0e8;'>Authenticated Session</strong>. Any valid stakeholder role is authorized.";
+  return "Restricted to: <strong style='color:#f5f0e8;'>" + rbac.join(" or ").toUpperCase() + "</strong>. Platform Admins always retain superuser authorization.";
+}
 
-      // UI Loading state
-      sendBtn.disabled = true;
-      document.getElementById("sendBtnIcon").innerHTML = "&#8987;";
-      const startTime = performance.now();
+/* ================================================================
+   RBAC BANNER
+   ================================================================ */
+function checkRbac(ep) {
+  const banner = document.getElementById("rbacBanner");
+  if (ep.rbac.includes("public")) { banner.style.display = "none"; return; }
+  const ok = S.role === "admin" || ep.rbac.includes("all-authenticated") || ep.rbac.includes(S.role);
+  if (ok) { banner.style.display = "none"; return; }
+  const rec = ep.rbac[0] === "all-authenticated" ? "beekeeper" : ep.rbac[0];
+  banner.style.display = "flex";
+  document.getElementById("rbacBannerTxt").innerHTML = "This endpoint requires <strong>" + ep.rbac.join(" / ") + "</strong>. You're currently <strong>" + S.role.toUpperCase() + "</strong>.";
+  const btn = document.getElementById("rbacSwitchBtn"); btn.textContent = "Switch to " + rec.toUpperCase(); btn.onclick = () => switchRole(rec);
+}
 
-      try {
-        const response = await fetch(url, options);
-        const duration = Math.round(performance.now() - startTime);
+/* ================================================================
+   TAB NAVIGATION
+   ================================================================ */
+function switchTab(tab) {
+  ["params","body","headers","auth","docs"].forEach(t => {
+    const pane = document.getElementById("pane" + t.charAt(0).toUpperCase() + t.slice(1));
+    const btn  = document.querySelector(`.tab-btn[data-tab="${t}"]`);
+    if (pane) pane.style.display = t === tab ? "block" : "none";
+    if (btn) { btn.classList.toggle("tab-active", t === tab); btn.style.color = t === tab ? "#f59e0b" : "#7a6e60"; }
+  });
+}
 
-        const contentType = response.headers.get("content-type") || "";
-        let responseData = null;
-        let isJson = false;
+/* ================================================================
+   BODY EDITOR HELPERS
+   ================================================================ */
+function formatJson() { const e=document.getElementById("bodyEditor"); try{e.value=JSON.stringify(JSON.parse(e.value),null,2);toast("JSON formatted \u2713");}catch{toast("Invalid JSON");} }
+function resetBody() { if(S.ep?.defaultBody){document.getElementById("bodyEditor").value=JSON.stringify(S.ep.defaultBody,null,2);toast("Reset to default payload");} }
+function clearBody() { document.getElementById("bodyEditor").value=""; }
 
-        if (contentType.includes("application/json")) {
-          responseData = await response.json();
-          isJson = true;
-        } else {
-          responseData = await response.text();
-        }
+/* ================================================================
+   REQUEST EXECUTION
+   ================================================================ */
+async function executeRequest() {
+  const btn=document.getElementById("sendBtn"), icon=document.getElementById("sendIcon");
+  const method=document.getElementById("methodSel").value, path=document.getElementById("pathInput").value.trim();
+  const url=S.baseUrl+(path.startsWith("/")?"":"/")+path;
+  const headers={"Accept":"application/json, text/html, */*"};
+  const tok=S.tokens[S.role]; if(tok&&S.role!=="none") headers["Authorization"]="Bearer "+tok;
+  const opts={method,headers};
+  if(["POST","PATCH","PUT"].includes(method)){
+    const body=document.getElementById("bodyEditor").value.trim();
+    if(body){ try{JSON.parse(body);headers["Content-Type"]="application/json";opts.body=body;}catch{toast("Invalid JSON in body");switchTab("body");return;} }
+  }
+  btn.disabled=true; icon.textContent="\u23F3"; const t0=performance.now();
+  try{
+    const res=await fetch(url,opts); const ms=Math.round(performance.now()-t0);
+    const ct=res.headers.get("content-type")||""; let data,isJson=false;
+    if(ct.includes("application/json")){data=await res.json();isJson=true;}else data=await res.text();
+    showRes(res.status,res.statusText,ms,data,isJson);
+  }catch(e){
+    showRes(0,"Network Error",Math.round(performance.now()-t0),{error:"Failed to connect",message:e.message,suggestion:"Ensure HoneyChain backend is running."},true);
+  }finally{btn.disabled=false;icon.textContent="\u25B6";}
+}
 
-        renderResponseOutput(response.status, response.statusText, duration, responseData, isJson);
-      } catch (networkErr) {
-        const duration = Math.round(performance.now() - startTime);
-        renderResponseOutput(0, "Network Error", duration, {
-          error: "Failed to connect to backend service",
-          message: networkErr.message,
-          suggestion: "Ensure HoneyChain backend server is running and accessible."
-        }, true);
-      } finally {
-        sendBtn.disabled = false;
-        document.getElementById("sendBtnIcon").innerHTML = "&#9654;";
-      }
-    }
+/* ================================================================
+   RESPONSE DISPLAY
+   ================================================================ */
+function showRes(status,statusText,ms,data,isJson){
+  document.getElementById("resEmpty").style.display="none";
+  const pre=document.getElementById("resBody"); pre.style.display="block";
+  const badge=document.getElementById("resStatus"); badge.style.display="inline-block";
+  badge.textContent=status?(status+" "+statusText):"Network Error";
+  badge.className=(status>=200&&status<300?"s-2xx":status>=300&&status<400?"s-3xx":status>=400&&status<500?"s-4xx":status>=500?"s-5xx":"s-err");
+  badge.style.padding="3px 8px"; badge.style.borderRadius="5px"; badge.style.fontFamily="'Fira Code',monospace"; badge.style.fontSize="12px"; badge.style.fontWeight="700";
+  document.getElementById("resTime").style.display="inline"; document.getElementById("resTimeVal").textContent=ms+" ms";
+  const bytes=new Blob([typeof data==="string"?data:JSON.stringify(data)]).size;
+  document.getElementById("resSize").style.display="inline"; document.getElementById("resSizeVal").textContent=fmtBytes(bytes);
+  if(isJson) pre.innerHTML=hlJson(JSON.stringify(data,null,2)); else pre.textContent=String(data);
+}
+function hlJson(s){
+  return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+    .replace(/(\"(\\u[a-fA-F0-9]{4}|\\[^u]|[^\\\"])*\"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,m=>{
+      if(/^"/.test(m)) return/:$/.test(m)?`<span class="j-key">${m}</span>`:`<span class="j-str">${m}</span>`;
+      if(/true|false/.test(m)) return `<span class="j-bool">${m}</span>`;
+      if(/null/.test(m)) return `<span class="j-null">${m}</span>`;
+      return `<span class="j-num">${m}</span>`;
+    });
+}
 
-    function renderResponseOutput(status, statusText, durationMs, data, isJson) {
-      document.getElementById("responseEmptyState").style.display = "none";
-      const preEl = document.getElementById("responseJsonPre");
-      preEl.style.display = "block";
+/* ================================================================
+   COPY HELPERS
+   ================================================================ */
+function copyAsCurl(){
+  if(!S.ep) return;
+  const path=document.getElementById("pathInput").value, method=document.getElementById("methodSel").value;
+  const url=S.baseUrl+(path.startsWith("/")?"":"/")+path, tok=S.tokens[S.role];
+  let cmd=`curl -X ${method} "${url}" \\\n  -H "Accept: application/json"`;
+  if(tok&&S.role!=="none") cmd+=` \\\n  -H "Authorization: Bearer ${tok}"`;
+  if(["POST","PATCH","PUT"].includes(method)){const b=document.getElementById("bodyEditor").value.trim();if(b)cmd+=` \\\n  -H "Content-Type: application/json" \\\n  -d '${b.replace(/'/g,"'\\''")}' `;}
+  navigator.clipboard.writeText(cmd); toast("cURL copied!");
+}
+function copyResponse(){ const pre=document.getElementById("resBody"); if(!pre.textContent)return; navigator.clipboard.writeText(pre.textContent); toast("Response copied!"); }
+function copyToken(){ const tok=S.tokens[S.role]; if(!tok){toast("No token for unauthenticated persona");return;} navigator.clipboard.writeText(tok); toast("JWT token copied!"); }
 
-      // Status Badge
-      const statusBadge = document.getElementById("resStatusBadge");
-      statusBadge.style.display = "inline-flex";
-      statusBadge.textContent = status ? `${status} ${statusText}` : "Network Error";
-      statusBadge.className = `response-status-badge ${getStatusClass(status)}`;
-
-      // Time & Size
-      document.getElementById("resTimeBadge").style.display = "inline";
-      document.getElementById("resTimeVal").textContent = `${durationMs} ms`;
-
-      const byteSize = new Blob([typeof data === "string" ? data : JSON.stringify(data)]).size;
-      document.getElementById("resSizeBadge").style.display = "inline";
-      document.getElementById("resSizeVal").textContent = formatBytes(byteSize);
-
-      if (isJson) {
-        preEl.innerHTML = syntaxHighlightJSON(JSON.stringify(data, null, 2));
-      } else {
-        preEl.textContent = String(data);
-      }
-    }
-
-    function getStatusClass(status) {
-      if (status >= 200 && status < 300) return "status-2xx";
-      if (status >= 300 && status < 400) return "status-3xx";
-      if (status >= 400 && status < 500) return "status-4xx";
-      return "status-5xx";
-    }
-
-    function syntaxHighlightJSON(jsonStr) {
-      return jsonStr.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(
-        /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,
-        function (match) {
-          let cls = "json-number";
-          if (/^"/.test(match)) {
-            if (/:$/.test(match)) {
-              cls = "json-key";
-            } else {
-              cls = "json-string";
-            }
-          } else if (/true|false/.test(match)) {
-            cls = "json-boolean";
-          } else if (/null/.test(match)) {
-            cls = "json-null";
-          }
-          return `<span class="${cls}">${match}</span>`;
-        }
-      );
-    }
-
-    /* =========================================================================
-       Tab Navigation & Helpers
-       ========================================================================= */
-    function switchReqTab(tabKey) {
-      document.querySelectorAll(".tab-btn").forEach(btn => {
-        btn.classList.toggle("active", btn.getAttribute("data-tab") === tabKey);
-      });
-
-      const panes = ["params", "body", "headers", "auth", "docs"];
-      panes.forEach(p => {
-        const el = document.getElementById(`tabPane${capitalize(p)}`);
-        if (el) el.style.display = p === tabKey ? "block" : "none";
-      });
-    }
-
-    function capitalize(str) {
-      return str.charAt(0).toUpperCase() + str.slice(1);
-    }
-
-    function filterEndpoints() {
-      state.searchQuery = document.getElementById("endpointSearchInput").value;
-      renderEndpointList();
-    }
-
-    function filterByCategory(cat) {
-      state.selectedCategory = cat;
-      document.querySelectorAll(".filter-btn").forEach(btn => {
-        btn.classList.toggle("active", btn.getAttribute("data-category") === cat);
-      });
-      renderEndpointList();
-    }
-
-    function formatRequestBodyJSON() {
-      const editor = document.getElementById("reqBodyEditor");
-      try {
-        const parsed = JSON.parse(editor.value);
-        editor.value = JSON.stringify(parsed, null, 2);
-        showToast("JSON formatted cleanly!");
-      } catch (e) {
-        showToast("Cannot format: Invalid JSON syntax");
-      }
-    }
-
-    function resetDefaultPayload() {
-      if (state.currentEndpoint && state.currentEndpoint.defaultBody) {
-        document.getElementById("reqBodyEditor").value = JSON.stringify(state.currentEndpoint.defaultBody, null, 2);
-        showToast("Reset to default payload template");
-      }
-    }
-
-    function clearRequestBody() {
-      document.getElementById("reqBodyEditor").value = "";
-    }
-
-    function copyAsCurl() {
-      if (!state.currentEndpoint) return;
-      const path = document.getElementById("reqPathInput").value;
-      const method = document.getElementById("reqMethodSelect").value;
-      const url = `${state.baseUrl}${path.startsWith('/') ? '' : '/'}${path}`;
-      const token = state.tokens[state.activeRole];
-
-      let curl = `curl -X ${method} "${url}" \\\n  -H "Accept: application/json"`;
-
-      if (token && state.activeRole !== "none") {
-        curl += ` \\\n  -H "Authorization: Bearer ${token}"`;
-      }
-
-      if (method === "POST" || method === "PATCH") {
-        const body = document.getElementById("reqBodyEditor").value.trim();
-        if (body) {
-          curl += ` \\\n  -H "Content-Type: application/json" \\\n  -d '${body.replace(/'/g, "'\\''")}'`;
-        }
-      }
-
-      navigator.clipboard.writeText(curl);
-      showToast("cURL command copied to clipboard!");
-    }
-
-    function copyResponseBody() {
-      const pre = document.getElementById("responseJsonPre");
-      if (!pre.textContent) return;
-      navigator.clipboard.writeText(pre.textContent);
-      showToast("Response body copied to clipboard!");
-    }
-
-    function copyActiveToken() {
-      const token = state.tokens[state.activeRole];
-      if (!token) {
-        showToast("No active token for unauthenticated persona");
-        return;
-      }
-      navigator.clipboard.writeText(token);
-      showToast("JWT token copied to clipboard!");
-    }
-
-    function showToast(msg) {
-      const toast = document.getElementById("toast");
-      toast.textContent = msg;
-      toast.classList.add("show");
-      setTimeout(() => toast.classList.remove("show"), 2600);
-    }
-
-    function formatBytes(bytes) {
-      if (bytes < 1024) return `${bytes} B`;
-      if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-      return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
-    }
-
-    function escapeHtml(text) {
-      if (!text) return "";
-      return String(text)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-    }
-  </script>
+/* ================================================================
+   UTILS
+   ================================================================ */
+function toast(msg){ const el=document.getElementById("toast"); el.textContent=msg; el.classList.add("toast-show"); setTimeout(()=>el.classList.remove("toast-show"),2800); }
+function fmtBytes(b){ if(b<1024)return b+" B"; if(b<1048576)return(b/1024).toFixed(1)+" KB"; return(b/1048576).toFixed(2)+" MB"; }
+function esc(t){ if(!t)return""; return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;"); }
+</script>
 </body>
 </html>
