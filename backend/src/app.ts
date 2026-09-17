@@ -115,8 +115,17 @@ app.get("/", (req, res) => {
   }
 
   res.type("html").send(
-    `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>HoneyChain Backend</title></head><body style="font-family:system-ui,sans-serif;background:#0d0a07;color:#fbf8f2;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;"><div style="text-align:center;padding:32px;border:1px solid #2a2015;border-radius:12px;background:#14100b;max-width:520px;"><h1 style="color:#d69e1f;">HoneyChain</h1><p style="font-size:16px;font-weight:500;margin:8px 0;">This is the backend service.</p><p style="color:#a89f91;font-size:14px;">This server handles API communication and data processing for the frontend.</p></div></body></html>`
+    `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>HoneyChain Backend &bull; Batch Provenance Verification</title><link rel="icon" type="image/png" href="/logohb.png"><link rel="shortcut icon" type="image/png" href="/logohb.png"></head><body style="font-family:system-ui,sans-serif;background:#0d0a07;color:#fbf8f2;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;"><div style="text-align:center;padding:32px;border:1px solid #2a2015;border-radius:12px;background:#14100b;max-width:520px;"><h1 style="color:#d69e1f;">HoneyChain</h1><p style="font-size:16px;font-weight:500;margin:8px 0;">This is the backend service.</p><p style="color:#a89f91;font-size:14px;">This server handles API communication and data processing for the frontend.</p></div></body></html>`
   );
+});
+
+// Favicon resolution route
+app.get("/favicon.ico", (req, res) => {
+  const iconPath = path.join(PUBLIC_DIR, "logohb.png");
+  if (fs.existsSync(iconPath)) {
+    return res.sendFile(iconPath);
+  }
+  res.status(204).end();
 });
 
 // Mount Operational & Provenance Routes
