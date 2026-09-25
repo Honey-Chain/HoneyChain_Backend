@@ -78,7 +78,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // Dedicated Production Health Check
-app.get("/health", (req, res) => {
+app.get(["/health", "/api/health"], (req, res) => {
   const isDbConnected = mongoose.connection.readyState === 1;
   const status = isDbConnected ? "ok" : "degraded";
   const statusCode = isDbConnected ? 200 : 503;
