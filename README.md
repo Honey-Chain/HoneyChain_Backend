@@ -40,6 +40,41 @@ HoneyChain/
 
 ---
 
+## 🔑 Judge & Evaluation Demo Credentials
+
+To facilitate rapid evaluation of HoneyChain's end-to-end supply chain, pre-seeded accounts are provided across all role portals.
+
+> **Live Login Portal:** [https://www.honeychain.in/login](https://www.honeychain.in/login)  
+> **Universal Demo Password:** `Password123!`
+
+### Stakeholder Role Accounts
+
+| Role | Email | Password | Representative | Organization & Scope | Dashboard Path |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **`admin`** | `admin@honeychain.org` | `Password123!` | System Administrator | **HoneyChain Authority**<br>System oversight, user management, cluster analytics | `/authority/dashboard` |
+| **`beekeeper`** | `beekeeper@honeychain.org` | `Password123!` | Rajesh Kumar | **Sundarbans Apiary Cooperative**<br>Hive IoT telemetry, harvests & on-chain batch creation | `/farmer/dashboard` |
+| **`lab`** | `lab@honeychain.org` | `Password123!` | Dr. Ananya Sen | **National Honey Quality Lab**<br>Moisture assays, purity testing & smart contract attestation | `/lab/dashboard` |
+| **`processor`** | `processor@honeychain.org` | `Password123!` | Vikram Patel | **Bengal Organic Honey Processing**<br>Bulk receipt, processing, packaging & custody transfer | `/processor/dashboard` |
+| **`distributor`** | `distributor@honeychain.org` | `Password123!` | Gurpreet Singh | **SafeHive Cold Chain Logistics**<br>Transit tracking, warehouse custody & retail dispatch | `/distributor/dashboard` |
+| **`auditor`** | `auditor@honeychain.org` | `Password123!` | Priya Sharma | **FSSAI Quality & Compliance Bureau**<br>Regulatory inspection & emergency recall execution | `/authority/dashboard` |
+
+---
+
+### 🔍 Consumer QR & Traceability Verification (No Login Required)
+
+- **Public Verification Portal:** [https://www.honeychain.in/verify](https://www.honeychain.in/verify)
+
+#### Test Batches for Immediate Verification
+
+| Batch ID | Verification Status | Features Demonstrated | Direct Verification Link |
+| :--- | :--- | :--- | :--- |
+| `HC-VERIFIED-2026` | 🟢 **Certified & Verified** | Grade A purity, complete multi-custodian chain of custody, Sepolia on-chain hash anchor | [Verify Batch](https://www.honeychain.in/verify/HC-VERIFIED-2026) |
+| `HC-PENDING-2026` | ⏳ **Awaiting Lab** | Harvested & registered batch currently undergoing laboratory verification | [Verify Batch](https://www.honeychain.in/verify/HC-PENDING-2026) |
+| `HC-RECALLED-2026` | ⚠️ **Recalled / Flagged** | Tamper detection & regulatory recall preventing consumer distribution | [Verify Batch](https://www.honeychain.in/verify/HC-RECALLED-2026) |
+
+
+---
+
 ## Subsystem Responsibilities
 
 ### 1. `backend/` (Operational Core)
