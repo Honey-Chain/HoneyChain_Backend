@@ -40,35 +40,35 @@ HoneyChain/
 
 ---
 
-## 🔑 Judge & Evaluation Demo Credentials
+## Evaluation & Demo Credentials
 
 > [!IMPORTANT]
 > **Universal Demo Password:** `Password123!`  
 > **Direct Login Portal:** [https://www.honeychain.in/login](https://www.honeychain.in/login)  
 > *(Logging in with any account below automatically routes to that role's dedicated portal)*
 
-| Stakeholder Portal | Login Email | Key Workflow to Evaluate |
+| Stakeholder Role | Login Email | Key Workflow to Evaluate |
 | :--- | :--- | :--- |
-| 🛡️ **Administrator** | `admin@honeychain.org` | Member organization approvals, system metrics & user administration |
-| 🐝 **Beekeeper** | `beekeeper@honeychain.org` | Live IoT hive telemetry, AI health alerts, harvests & on-chain batch creation |
-| 🔬 **Quality Laboratory** | `lab@honeychain.org` | Moisture assays, purity testing & Sepolia smart contract attestation |
-| 🏭 **Processor** | `processor@honeychain.org` | Honey processing, bottling, batch packaging & custody transfer |
-| 🚚 **Distributor** | `distributor@honeychain.org` | Cold-chain dispatch, transit temperature tracking & custody transfer |
-| ⚖️ **Regulatory Auditor** | `auditor@honeychain.org` | Quality audits, compliance checks & emergency batch recall execution |
+| **System Administrator** | `admin@honeychain.org` | Member organization approvals, system metrics & user administration |
+| **Beekeeper** | `beekeeper@honeychain.org` | Live IoT hive telemetry, AI health alerts, harvests & on-chain batch creation |
+| **Quality Laboratory** | `lab@honeychain.org` | Moisture assays, purity testing & Sepolia smart contract attestation |
+| **Processing Plant** | `processor@honeychain.org` | Honey processing, bottling, batch packaging & custody transfer |
+| **Cold-Chain Distributor** | `distributor@honeychain.org` | Cold-chain dispatch, transit temperature tracking & custody transfer |
+| **Regulatory Auditor** | `auditor@honeychain.org` | Quality audits, compliance checks & emergency batch recall execution |
 
 ---
 
-### 🔍 Consumer QR & Traceability Verification (No Login Required)
+### Public Consumer Verification (No Authentication Required)
 
 Test the public consumer verification experience without logging in:
 
-> 📱 **Verification Portal:** [https://www.honeychain.in/verify](https://www.honeychain.in/verify)
+> **Verification Portal:** [https://www.honeychain.in/verify](https://www.honeychain.in/verify)
 
 | Sample Batch | Status | Verification Scenario | Direct Link |
 | :--- | :--- | :--- | :--- |
-| `HC-VERIFIED-2026` | 🟢 **Verified** | Grade-A pure honey with full IoT history & Sepolia hash anchor | [Verify Batch ↗](https://www.honeychain.in/verify/HC-VERIFIED-2026) |
-| `HC-PENDING-2026` | 🟡 **Pending** | Harvested batch currently awaiting laboratory testing | [Verify Batch ↗](https://www.honeychain.in/verify/HC-PENDING-2026) |
-| `HC-RECALLED-2026` | 🔴 **Recalled** | Failed purity test demonstrating tamper-evident alert on scan | [Verify Batch ↗](https://www.honeychain.in/verify/HC-RECALLED-2026) |
+| `HC-VERIFIED-2026` | Verified (Grade A) | Certified honey with full IoT history & Sepolia hash anchor | [Verify Batch](https://www.honeychain.in/verify/HC-VERIFIED-2026) |
+| `HC-PENDING-2026` | Pending Lab | Harvested batch currently awaiting laboratory testing | [Verify Batch](https://www.honeychain.in/verify/HC-PENDING-2026) |
+| `HC-RECALLED-2026` | Flagged / Recalled | Failed purity test demonstrating tamper-evident alert on scan | [Verify Batch](https://www.honeychain.in/verify/HC-RECALLED-2026) |
 
 
 ---
@@ -113,11 +113,11 @@ The Express backend connects to Ethereum Sepolia using **`ethers.js` (v6)** over
 
 ## Quick Reference Links
 
-- 📚 [Documentation Hub](docs/README.md)
-- 📡 [REST API Documentation](docs/api.md) *(Mandatory: keep updated whenever endpoints change)*
-- 🏛️ [System Architecture](docs/architecture.md)
-- ⛓️ [Smart Contract Specifications](docs/contract.md)
-- 🧠 [AI / ML Integration](docs/ml-integration.md)
-- 🛠️ [Developer Setup Guide](docs/setup.md)
-- ⚖️ [Architecture Decisions (ADRs)](docs/decisions.md)
-- 📝 [Changelog](docs/changelog.md)
+- [Documentation Hub](docs/README.md)
+- [REST API Documentation](docs/api.md) *(Mandatory: keep updated whenever endpoints change)*
+- [System Architecture](docs/architecture.md)
+- [Smart Contract Specifications](docs/contract.md)
+- [AI / ML Integration](docs/ml-integration.md)
+- [Developer Setup Guide](docs/setup.md)
+- [Architecture Decisions (ADRs)](docs/decisions.md)
+- [Changelog](docs/changelog.md)
