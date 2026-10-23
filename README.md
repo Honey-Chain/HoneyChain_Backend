@@ -42,35 +42,33 @@ HoneyChain/
 
 ## 🔑 Judge & Evaluation Demo Credentials
 
-To facilitate rapid evaluation of HoneyChain's end-to-end supply chain, pre-seeded accounts are provided across all role portals.
+> [!IMPORTANT]
+> **Universal Demo Password:** `Password123!`  
+> **Direct Login Portal:** [https://www.honeychain.in/login](https://www.honeychain.in/login)  
+> *(Logging in with any account below automatically routes to that role's dedicated portal)*
 
-> **Live Login Portal:** [https://www.honeychain.in/login](https://www.honeychain.in/login)  
-> **Universal Demo Password:** `Password123!`
-
-### Stakeholder Role Accounts
-
-| Role | Email | Password | Representative | Organization & Scope | Dashboard Path |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **`admin`** | `admin@honeychain.org` | `Password123!` | System Administrator | **HoneyChain Authority**<br>System oversight, user management, cluster analytics | `/authority/dashboard` |
-| **`beekeeper`** | `beekeeper@honeychain.org` | `Password123!` | Rajesh Kumar | **Sundarbans Apiary Cooperative**<br>Hive IoT telemetry, harvests & on-chain batch creation | `/farmer/dashboard` |
-| **`lab`** | `lab@honeychain.org` | `Password123!` | Dr. Ananya Sen | **National Honey Quality Lab**<br>Moisture assays, purity testing & smart contract attestation | `/lab/dashboard` |
-| **`processor`** | `processor@honeychain.org` | `Password123!` | Vikram Patel | **Bengal Organic Honey Processing**<br>Bulk receipt, processing, packaging & custody transfer | `/processor/dashboard` |
-| **`distributor`** | `distributor@honeychain.org` | `Password123!` | Gurpreet Singh | **SafeHive Cold Chain Logistics**<br>Transit tracking, warehouse custody & retail dispatch | `/distributor/dashboard` |
-| **`auditor`** | `auditor@honeychain.org` | `Password123!` | Priya Sharma | **FSSAI Quality & Compliance Bureau**<br>Regulatory inspection & emergency recall execution | `/authority/dashboard` |
+| Stakeholder Portal | Login Email | Key Workflow to Evaluate |
+| :--- | :--- | :--- |
+| 🛡️ **Administrator** | `admin@honeychain.org` | Member organization approvals, system metrics & user administration |
+| 🐝 **Beekeeper** | `beekeeper@honeychain.org` | Live IoT hive telemetry, AI health alerts, harvests & on-chain batch creation |
+| 🔬 **Quality Laboratory** | `lab@honeychain.org` | Moisture assays, purity testing & Sepolia smart contract attestation |
+| 🏭 **Processor** | `processor@honeychain.org` | Honey processing, bottling, batch packaging & custody transfer |
+| 🚚 **Distributor** | `distributor@honeychain.org` | Cold-chain dispatch, transit temperature tracking & custody transfer |
+| ⚖️ **Regulatory Auditor** | `auditor@honeychain.org` | Quality audits, compliance checks & emergency batch recall execution |
 
 ---
 
 ### 🔍 Consumer QR & Traceability Verification (No Login Required)
 
-- **Public Verification Portal:** [https://www.honeychain.in/verify](https://www.honeychain.in/verify)
+Test the public consumer verification experience without logging in:
 
-#### Test Batches for Immediate Verification
+> 📱 **Verification Portal:** [https://www.honeychain.in/verify](https://www.honeychain.in/verify)
 
-| Batch ID | Verification Status | Features Demonstrated | Direct Verification Link |
+| Sample Batch | Status | Verification Scenario | Direct Link |
 | :--- | :--- | :--- | :--- |
-| `HC-VERIFIED-2026` | 🟢 **Certified & Verified** | Grade A purity, complete multi-custodian chain of custody, Sepolia on-chain hash anchor | [Verify Batch](https://www.honeychain.in/verify/HC-VERIFIED-2026) |
-| `HC-PENDING-2026` | ⏳ **Awaiting Lab** | Harvested & registered batch currently undergoing laboratory verification | [Verify Batch](https://www.honeychain.in/verify/HC-PENDING-2026) |
-| `HC-RECALLED-2026` | ⚠️ **Recalled / Flagged** | Tamper detection & regulatory recall preventing consumer distribution | [Verify Batch](https://www.honeychain.in/verify/HC-RECALLED-2026) |
+| `HC-VERIFIED-2026` | 🟢 **Verified** | Grade-A pure honey with full IoT history & Sepolia hash anchor | [Verify Batch ↗](https://www.honeychain.in/verify/HC-VERIFIED-2026) |
+| `HC-PENDING-2026` | 🟡 **Pending** | Harvested batch currently awaiting laboratory testing | [Verify Batch ↗](https://www.honeychain.in/verify/HC-PENDING-2026) |
+| `HC-RECALLED-2026` | 🔴 **Recalled** | Failed purity test demonstrating tamper-evident alert on scan | [Verify Batch ↗](https://www.honeychain.in/verify/HC-RECALLED-2026) |
 
 
 ---
